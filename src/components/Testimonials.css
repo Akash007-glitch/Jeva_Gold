@@ -1,0 +1,86 @@
+.testimonials { background-color: var(--color-neutral-soft); }
+
+.testimonials__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 4rem;
+}
+
+.testimonials__heading { font-size: 2.25rem; font-weight: 900; margin-bottom: 0.5rem; }
+.testimonials__subtext { color: var(--color-slate-500); }
+
+.testimonials__nav { display: flex; gap: 0.5rem; }
+
+.testimonials__nav-btn {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-slate-300);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-colors);
+  background: transparent;
+  cursor: pointer;
+}
+.testimonials__nav-btn:hover { background-color: var(--color-white); }
+
+.testimonials__grid { display: grid; gap: 2rem; }
+
+.testimonials__card {
+  background-color: var(--color-white);
+  padding: 2.5rem;
+  border-radius: 1.875rem;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+.testimonials__quote-icon {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  font-size: 3.75rem;
+  color: rgba(47, 111, 78, 0.2);
+}
+
+.testimonials__stars { display: flex; color: var(--color-accent); margin-bottom: 1rem; }
+
+.testimonials__text {
+  color: var(--color-slate-600);
+  font-style: italic;
+  margin-bottom: 2rem;
+  line-height: 1.75;
+}
+
+.testimonials__reviewer { display: flex; align-items: center; gap: 1rem; }
+
+.testimonials__avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-slate-200);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.testimonials__avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.testimonials__reviewer-name { font-weight: 700; }
+
+.testimonials__reviewer-role {
+  font-size: 0.75rem;
+  color: var(--color-slate-500);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.testimonials__card--hidden-md { display: none; }
+
+@media (min-width: 768px) {
+  .testimonials__grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1024px) {
+  .testimonials__grid { grid-template-columns: repeat(3, 1fr); }
+  .testimonials__card--hidden-md { display: block; }
+}
