@@ -1,4 +1,6 @@
 import './ProductShowcase.css';
+import product1Img from '../../image/product1.png';
+import product2Img from '../../image/product2.jpeg';
 
 const products = [
   {
@@ -6,8 +8,7 @@ const products = [
     name: "Jeeva Gold Rich Elaichi Tea",
     // price: "$24.00",
     description: "Bold Assam tea meets the warmth of real elaichi. A rich, aromatic cup that starts your day right.",
-    image:
-      "image/product1.png",
+    image: product1Img,
     featured: false,
   },
   {
@@ -15,8 +16,7 @@ const products = [
     name: "Imperial Gold",
     // price: "$38.00",
     description: "Rare second flush leaves with honeyed notes and bright gold liquor.",
-    image:
-      "image/product2.jpeg",
+    image: product2Img,
     featured: true,
   },
   // {
