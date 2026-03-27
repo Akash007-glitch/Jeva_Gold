@@ -1,33 +1,44 @@
 import './ProductShowcase.css';
 import product1Img from '../../image/product1.png';
 import product2Img from '../../image/product2.jpeg';
+import Product3Img from '../../image/Elaichi.jpg'
+import Product4Img from '../../image/GreenTea.jpg'
+import Product5Img from '../../image/MasalaChai.jpg'
+
 
 const products = [
   {
     id: 1,
-    name: "Jeeva Gold Rich Elaichi Tea",
+    name: "Jeeva Gold Elaichi Tea",
     // price: "$24.00",
-    description: "Bold Assam tea meets the warmth of real elaichi. A rich, aromatic cup that starts your day right.",
-    image: product1Img,
+    description: "Jeeva Gold Elaichi Tea brings rich strength & soothing aroma of cardamon — a perfect tea experience.",
+    image: Product3Img,
     featured: false,
   },
   {
     id: 2,
-    name: "Imperial Gold",
+    name: "Jeeva Gold Tea",
     // price: "$38.00",
-    description: "Rare second flush leaves with honeyed notes and bright gold liquor.",
+    description: "Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.",
     image: product2Img,
     featured: true,
   },
-  // {
-  //   id: 3,
-  //   name: "Golden Flowery",
-  //   price: "$32.00",
-  //   description: "A delicate blend of tender tea buds with floral undertones.",
-  //   image:
-  //     "https://lh3.googleusercontent.com/aida-public/AB6AXuD8w569ue2YlX5R_8ZAewwflIRMnfh2L-5ocMhL0TgLSbdRij7bHBVw2dWRmSZF0QzzsfdEHtILyz1qyp0kpdboR4hUe6F4jIELsfa43_mm1LEXo8kqjHaSZv6b6gOficiaDrR2XIYOExJU76YctBEzigVS4yaLqPRqfwnSueZmGocv4wH9e2IGtRttYTmVBr9jl8oOy45BpgqsSEd4Yyc6_ix4-iowFfbdfWh1OsT3SqvkcMoxlwJRmEQb8af2vuBSOQvyB5wKUMs",
-  //   featured: false,
-  // },
+  {
+    id: 3,
+    name: "Jeeva Gold Masala Chai",
+    // price: "$32.00",
+    description: "Jeeva Gold Masala Chai is a rich fusion of premium tea and aromatic spices , crafted for a strong and flavorful cup that warms your senses & provides a refreshing Masala Chai experience.",
+    image: Product5Img,
+    featured: false,
+  },
+  {
+    id: 4,
+    name: "Jeeva Gold Green Tea",
+    // price: "$32.00",
+    description: "Jeeva Gold Wellness Green Tea delivers a crisp burst of antioxidants and revitalizing freshness - The ultimate reset for your body and mind.",
+    image: Product4Img,
+    featured: false,
+  },
 ];
 
 function ProductCard({ product, delay }) {

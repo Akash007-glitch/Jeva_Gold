@@ -1,5 +1,32 @@
 .products {
-  background-color: var(--color-neutral-soft);
+  background: linear-gradient(160deg, #e8f5e9 0%, #f0f7f2 50%, #e6f2eb 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative blobs */
+.products::before,
+.products::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.products::before {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(47, 111, 78, 0.05) 0%, transparent 70%);
+  top: -200px;
+  left: -200px;
+}
+
+.products::after {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(127, 191, 127, 0.06) 0%, transparent 70%);
+  bottom: -150px;
+  right: -150px;
 }
 
 .products__header {
@@ -27,26 +54,34 @@
 }
 
 @media (min-width: 768px) {
-  .products__grid { grid-template-columns: repeat(3, 1fr); }
+  .products__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .products__grid { grid-template-columns: repeat(4, 1fr); }
 }
 
 /* ── Product Card ─────────────────────────────────────────── */
 .product-card {
-  background: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.3);
+  border: 1px solid rgba(47,111,78,0.15);
   padding: 1.5rem;
   border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-slate-xl);
-  transition: transform 250ms ease;
+  box-shadow: 0 10px 15px -3px rgba(47,111,78,0.05), 0 4px 6px -4px rgba(47,111,78,0.02);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms ease, border-color 300ms ease;
 }
-.product-card:hover { transform: translateY(-0.5rem); }
-.product-card--featured { border: 2px solid rgba(47,111,78,0.2); }
+.product-card:hover { 
+  transform: translateY(-0.5rem); 
+  box-shadow: 0 20px 25px -5px rgba(47,111,78,0.12), 0 8px 10px -6px rgba(47,111,78,0.06);
+  border-color: rgba(47,111,78,0.3);
+}
+.product-card--featured { border: 2px solid rgba(47,111,78,0.25); }
 
 .product-card__image-wrap {
   aspect-ratio: 4/5;
-  background-color: var(--color-white);
+  background-color: #f0f7f2;
   border-radius: var(--radius-xl);
   overflow: hidden;
   margin-bottom: 1.5rem;
