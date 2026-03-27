@@ -20,7 +20,7 @@ const products = [
     name: "Jeeva Gold Tea",
     // price: "$38.00",
     description: "Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.",
-    image: product2Img,
+    image: product1Img,
     featured: true,
   },
   {
