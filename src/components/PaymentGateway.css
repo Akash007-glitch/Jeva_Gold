@@ -1,0 +1,571 @@
+/* ============================================
+   PaymentGateway.css — Assam Verdant
+   ============================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Manrope:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap");
+
+/* --- Tokens --- */
+:root {
+  --primary: #115637;
+  --primary-container: #2f6f4e;
+  --on-primary: #ffffff;
+  --on-primary-container: #acefc6;
+  --surface: #f8faf9;
+  --surface-container: #eceeed;
+  --surface-container-low: #f2f4f3;
+  --surface-container-high: #e6e9e8;
+  --on-surface: #191c1c;
+  --on-surface-variant: #404942;
+  --outline-variant: #bfc9c0;
+  --secondary-container: #b0f3ae;
+  --on-secondary-container: #34713a;
+  --font-headline: "Noto Serif", serif;
+  --font-body: "Manrope", sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  vertical-align: middle;
+}
+
+/* --- Root --- */
+.pg-root {
+  font-family: var(--font-body);
+  background-color: var(--surface);
+  color: var(--on-surface);
+  min-height: 100vh;
+}
+
+/* --- Navbar --- */
+.pg-nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.pg-nav-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  max-width: 1536px;
+  margin: 0 auto;
+}
+
+.pg-brand {
+  font-family: var(--font-headline);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a3d2b;
+}
+
+.pg-nav-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.pg-nav-links a {
+  text-decoration: none;
+  color: rgba(17, 86, 55, 0.6);
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.pg-nav-links a:hover {
+  color: var(--primary);
+}
+
+.pg-nav-active {
+  color: var(--primary) !important;
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 2px;
+}
+
+.pg-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pg-icon-btn {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  color: var(--on-surface);
+  transition: background 0.2s;
+}
+
+.pg-icon-btn:hover {
+  background: rgba(17, 86, 55, 0.06);
+}
+
+/* --- Main --- */
+.pg-main {
+  padding: 8rem 2rem 5rem;
+  max-width: 1152px;
+  margin: 0 auto;
+}
+
+.pg-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 1024px) {
+  .pg-grid {
+    grid-template-columns: 7fr 5fr;
+  }
+}
+
+/* --- Left Column --- */
+.pg-left {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.pg-header h1 {
+  font-family: var(--font-headline);
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+}
+
+.pg-header p {
+  color: var(--on-surface-variant);
+  max-width: 28rem;
+}
+
+/* --- Payment Section --- */
+.pg-payment-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pg-quick-pay {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.pg-quick-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--outline-variant);
+  border-radius: 0.75rem;
+  background: transparent;
+  font-family: var(--font-body);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pg-quick-btn:hover {
+  background: var(--surface-container-low);
+}
+
+/* --- Divider --- */
+.pg-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.pg-divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(191, 201, 192, 0.3);
+}
+
+.pg-divider-text {
+  font-size: 0.75rem;
+  color: var(--on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+/* --- Form --- */
+.pg-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pg-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.pg-field label {
+  font-size: 0.8rem;
+  color: var(--on-surface-variant);
+  margin-left: 2px;
+}
+
+.pg-field input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--outline-variant);
+  padding: 0.75rem 0.25rem;
+  font-size: 1.1rem;
+  font-family: var(--font-body);
+  color: var(--on-surface);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.pg-field input:focus {
+  border-bottom: 2px solid var(--primary);
+}
+
+.pg-field input::placeholder {
+  color: rgba(64, 73, 66, 0.4);
+}
+
+.pg-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.pg-card-input-wrap {
+  position: relative;
+}
+
+.pg-card-number {
+  width: 100%;
+  letter-spacing: 0.15em;
+}
+
+.pg-card-icon {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.75rem;
+  color: rgba(64, 73, 66, 0.4);
+  font-size: 1.2rem;
+}
+
+.pg-pay-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  background: var(--primary-container);
+  color: var(--on-primary);
+  padding: 1.25rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 20px 40px rgba(47, 111, 78, 0.2);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.pg-pay-btn:hover {
+  background: var(--primary);
+  box-shadow: 0 20px 40px rgba(17, 86, 55, 0.3);
+}
+
+/* --- Trust Badges --- */
+.pg-trust {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(191, 201, 192, 0.2);
+}
+
+.pg-trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pg-trust-item .material-symbols-outlined {
+  color: var(--primary);
+  font-size: 1.75rem;
+}
+
+.pg-trust-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 2px;
+}
+
+.pg-trust-sub {
+  font-size: 0.75rem;
+  color: var(--on-surface-variant);
+}
+
+/* --- Right Column: Summary Card --- */
+.pg-right {
+  position: sticky;
+  top: 8rem;
+}
+
+.pg-summary-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 25px 50px rgba(17, 86, 55, 0.05);
+}
+
+.pg-summary-card h2 {
+  font-family: var(--font-headline);
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* --- Items --- */
+.pg-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.pg-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.pg-item-img {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--surface-container);
+}
+
+.pg-item-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pg-item-info {
+  flex: 1;
+}
+
+.pg-item-name {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.pg-item-desc {
+  font-size: 0.8rem;
+  color: var(--on-surface-variant);
+  margin-top: 2px;
+}
+
+.pg-item-price {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* --- Totals --- */
+.pg-totals {
+  border-top: 1px solid rgba(191, 201, 192, 0.3);
+  padding-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pg-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--on-surface-variant);
+}
+
+.pg-free {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.pg-grand-total {
+  padding-top: 1rem;
+  align-items: flex-end;
+}
+
+.pg-grand-total > span:first-child {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.pg-total-right {
+  text-align: right;
+}
+
+.pg-grand-amount {
+  font-family: var(--font-headline);
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.pg-incl-label {
+  font-size: 0.625rem;
+  color: var(--on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* --- Info Box --- */
+.pg-info-box {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  background: var(--surface-container-low);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+.pg-info-box .material-symbols-outlined {
+  color: var(--primary-container);
+  flex-shrink: 0;
+}
+
+.pg-info-box p {
+  font-size: 0.75rem;
+  color: var(--on-surface-variant);
+  line-height: 1.6;
+}
+
+/* --- Footer --- */
+.pg-footer {
+  background: #1a3d2b;
+  color: #e8f5ee;
+  padding: 5rem 3rem 2.5rem;
+}
+
+.pg-footer-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  max-width: 1152px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .pg-footer-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.pg-footer-logo {
+  font-family: var(--font-headline);
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.pg-footer-brand p {
+  font-size: 0.85rem;
+  color: rgba(232, 245, 238, 0.6);
+  line-height: 1.6;
+}
+
+.pg-footer-heading {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(232, 245, 238, 0.5);
+  margin-bottom: 1rem;
+}
+
+.pg-footer-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pg-footer-col a {
+  font-size: 0.85rem;
+  color: rgba(232, 245, 238, 0.65);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.pg-footer-col a:hover {
+  color: #e8f5ee;
+}
+
+.pg-newsletter {
+  display: flex;
+}
+
+.pg-newsletter input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 0.5rem 0 0 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  color: #e8f5ee;
+  outline: none;
+}
+
+.pg-newsletter input::placeholder {
+  color: rgba(232, 245, 238, 0.4);
+}
+
+.pg-newsletter button {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding: 0.5rem 1rem;
+  color: #e8f5ee;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.pg-newsletter button:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.pg-footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 5rem;
+  padding-top: 2rem;
+  text-align: center;
+  max-width: 1152px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pg-footer-bottom p {
+  font-size: 0.75rem;
+  color: rgba(232, 245, 238, 0.3);
+}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import ProductShowcase from "./components/ProductShowcase";
@@ -10,9 +11,16 @@ import Footer from "./components/Footer";
 import Hero2 from "./components/Hero2";
 import VisualTeaserSection from "./components/VisualTeaserSection";
 import WhyChooseSection from "./components/WhyChooseSection";
+import ShoppingCart from './components/ShoppingCart'
+import CheckoutPage from './components/CheckoutPage'
+import PaymentGateway from './components/PaymentGateway'
+import OrderSuccess from "./components/OrderSuccess";
+
+// inside your router:
+
 
 export default function App() {
-  const [dark, setDark] = useState(false);
+  // const [dark, setDark] = useState(false);
 
   /* ── Global scroll-reveal observer ── */
   useEffect(() => {
@@ -35,17 +43,37 @@ export default function App() {
   }, []);
 
   return (
-    <div className="app">
-      <Navbar dark={dark} setDark={setDark} />
-      {/* <Hero2 /> */}
-      <Hero />
-      <ProductShowcase />
-      <WhyChooseSection />
-      <OriginStory />
-      <Benefits />
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        {/* The main landing page displaying everything */}
+        <Route path="/" element={
+          <div className="app-container">
+            <Hero />
+            <ProductShowcase />
+            <WhyChooseSection />
+            <OriginStory />
+            <Benefits />
+          </div>
+        } />
+
+        {/* Home / Landing (individual) */}
+        <Route path="/hero" element={<Hero />} />
+        <Route path="/productShow" element={<ProductShowcase />} />
+        <Route path="/CTAWhy" element={<WhyChooseSection />} />
+        <Route path="/OS" element={<OriginStory />} />
+        <Route path="/Benefits" element={<Benefits />} />
+
+        {/* E-commerce flow */}
+        <Route path="/cart" element={<ShoppingCart />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
+      </Routes>
+
+      {/* Put common global components like Footer outside <Routes> */}
       {/* <Testimonials /> */}
       <InstagramGrid />
       <Footer />
-    </div>
+    </BrowserRouter>
   );
 }
