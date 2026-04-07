@@ -47,24 +47,6 @@ const PaymentGateway = () => {
 
   return (
     <div className="pg-root">
-      {/* Navbar */}
-      <nav className="pg-nav">
-        <div className="pg-nav-inner">
-          <div className="pg-brand">Assam Verdant</div>
-          <div className="pg-nav-links">
-            <a href="#">Home</a>
-            <a href="#">Our Tea</a>
-            <a className="pg-nav-active" href="#">Checkout</a>
-            <a href="#">About Assam Tea</a>
-          </div>
-          <div className="pg-nav-actions">
-            <button className="pg-icon-btn">
-              <span className="material-symbols-outlined">shopping_bag</span>
-            </button>
-          </div>
-        </div>
-      </nav>
-
       {/* Main */}
       <main className="pg-main">
         <div className="pg-grid">
@@ -232,38 +214,6 @@ const PaymentGateway = () => {
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="pg-footer">
-        <div className="pg-footer-grid">
-          <div className="pg-footer-brand">
-            <div className="pg-footer-logo">Assam Verdant</div>
-            <p>Sourcing the finest single-origin teas from the ancient gardens of Assam, India.</p>
-          </div>
-          <div className="pg-footer-col">
-            <p className="pg-footer-heading">Information</p>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Shipping &amp; Returns</a>
-          </div>
-          <div className="pg-footer-col">
-            <p className="pg-footer-heading">Partnerships</p>
-            <a href="#">Wholesale</a>
-            <a href="#">Harvest Calendar</a>
-          </div>
-          <div className="pg-footer-col">
-            <p className="pg-footer-heading">Newsletter</p>
-            <div className="pg-newsletter">
-              <input type="email" placeholder="Tea secrets..." />
-              <button>
-                <span className="material-symbols-outlined">arrow_forward</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="pg-footer-bottom">
-          <p>© 2024 Assam Verdant. The Spirit of the Monsoon.</p>
-        </div>
-      </footer>
     </div>
   );
 };

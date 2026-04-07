@@ -81,15 +81,6 @@ const CheckoutPage = () => {
 
   return (
     <div className="co-root">
-      <header className="co-header">
-        <div className="co-header-inner">
-          <a className="co-brand" href="#">Jeeva Gold</a>
-          <div className="co-header-actions">
-            <span className="material-symbols-outlined">shopping_bag</span>
-          </div>
-        </div>
-      </header>
-
       <main className="co-main">
         <div className="co-grid">
           {/* ── Left: Address + Shipping + Button ── */}
@@ -257,40 +248,6 @@ const CheckoutPage = () => {
           </aside>
         </div>
       </main>
-
-      <footer className="co-footer">
-        <div className="co-footer-grid">
-          <div className="co-footer-brand">
-            <span className="co-footer-logo">Jeeva Gold</span>
-            <p>Curating the finest harvests from the Brahmaputra Valley since 1924.</p>
-          </div>
-          <div className="co-footer-col">
-            <span className="co-footer-heading">Navigation</span>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Shipping &amp; Returns</a>
-            <a href="#">Wholesale</a>
-            <a href="#">Harvest Calendar</a>
-          </div>
-          <div className="co-footer-col">
-            <span className="co-footer-heading">Connect</span>
-            <a href="#">Instagram</a>
-            <a href="#">The Leaf Journal</a>
-            <a href="#">Community Rituals</a>
-          </div>
-          <div className="co-footer-col">
-            <span className="co-footer-heading">Newsletter</span>
-            <div className="co-newsletter">
-              <input type="email" placeholder="Email Address" />
-              <button>
-                <span className="material-symbols-outlined">arrow_forward</span>
-              </button>
-            </div>
-          </div>
-        </div>
-        <div className="co-footer-bottom">
-          <p>© 2024 Jeeva Gold. The Spirit of the Monsoon.</p>
-        </div>
-      </footer>
     </div>
   );
 };

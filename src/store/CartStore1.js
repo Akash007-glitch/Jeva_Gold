@@ -51,19 +51,19 @@ export const useCartStore = create((set, get) => ({
     getShipping: () => {
         // Free over ₹10,000, otherwise ₹850
         const subtotal = get().items.reduce((sum, i) => sum + i.price * i.qty, 0);
-        return subtotal >= 10000 ? 0 : 850;
+        return subtotal >= 0 ? 0 : 0;
     },
 
     getTax: () => {
         // 18% GST on subtotal
         const subtotal = get().items.reduce((sum, i) => sum + i.price * i.qty, 0);
-        return Math.round(subtotal * 0.18);
+        return Math.round(subtotal * 0);
     },
 
     getTotal: () => {
         const subtotal = get().items.reduce((sum, i) => sum + i.price * i.qty, 0);
-        const shipping = subtotal >= 10000 ? 0 : 850;
-        const tax = Math.round(subtotal * 0.18);
+        const shipping = subtotal >= 0 ? 0 : 0;
+        const tax = Math.round(subtotal * 0);
         return subtotal + shipping + tax;
     },
 }));

@@ -26,30 +26,6 @@ const ShoppingCart = () => {
 
   return (
     <div className="sc-root">
-      {/* Navbar */}
-      <nav className="sc-nav">
-        <div className="sc-nav-inner">
-          <div className="sc-brand">Jeeva Gold</div>
-          <div className="sc-nav-links">
-            {["Home", "Our Tea", "Benefits", "About Assam Tea", "Reviews", "Contact"].map((link) => (
-              <a key={link} href="#">{link}</a>
-            ))}
-          </div>
-          <div className="sc-nav-actions">
-            <button className="sc-icon-btn">
-              <span className="material-symbols-outlined">shopping_bag</span>
-              {/* Live badge — updates from Zustand automatically */}
-              {items.length > 0 && (
-                <span className="sc-cart-badge">{items.length}</span>
-              )}
-            </button>
-            <button className="sc-icon-btn sc-menu-btn">
-              <span className="material-symbols-outlined">menu</span>
-            </button>
-          </div>
-        </div>
-      </nav>
-
       <main className="sc-main">
         <header className="sc-header">
           <h1>Your Selection</h1>
@@ -196,39 +172,6 @@ const ShoppingCart = () => {
           </div>
         </div>
       </main>
-
-      <footer className="sc-footer">
-        <div className="sc-footer-grid">
-          <div className="sc-footer-brand">
-            <div className="sc-footer-logo">Jeeva Gold</div>
-            <p>© 2024 Jeeva Gold. The Spirit of the Monsoon.</p>
-          </div>
-          <div className="sc-footer-col">
-            <h4>Shop</h4>
-            <a href="#">Privacy Policy</a>
-            <a href="#">Shipping &amp; Returns</a>
-            <a href="#">Wholesale</a>
-            <a href="#">Harvest Calendar</a>
-          </div>
-          <div className="sc-footer-col">
-            <h4>Journal</h4>
-            <a href="#">The Art of Brewing</a>
-            <a href="#">Sustainability</a>
-            <a href="#">Farmer Stories</a>
-          </div>
-          <div className="sc-footer-col">
-            <h4>Connect</h4>
-            <div className="sc-footer-icons">
-              <span className="material-symbols-outlined">mail</span>
-              <span className="material-symbols-outlined">public</span>
-              <span className="material-symbols-outlined">star</span>
-            </div>
-          </div>
-        </div>
-        <div className="sc-footer-bottom">
-          <p>Crafting heritage with every steep.</p>
-        </div>
-      </footer>
     </div>
   );
 };

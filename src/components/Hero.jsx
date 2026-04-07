@@ -1,10 +1,13 @@
 import './Hero.css';
+import Bgimage from '../../image/Bg.jpg'
 
 export default function Hero() {
   return (
-    <section className="hero">
-      <div className="hero__bg-pattern leaf-pattern" />
-      <div className="hero__bg-gradient" />
+    <section
+      className="hero"
+      style={{ backgroundImage: `url(${Bgimage})` }}
+    >
+      <div className="hero__bg-overlay" />
 
       <div className="container hero__grid">
         {/* Left Content */}
@@ -24,23 +27,9 @@ export default function Hero() {
           </p>
 
           <div className="hero__actions">
-
             <button className="hero__btn-secondary">
               Explore Our Tea
             </button>
-          </div>
-        </div>
-
-        {/* Right Image */}
-        <div className="hero__image-wrap">
-          <div className="hero__image-blur-1" />
-          <div className="hero__image-blur-2" />
-          <div className="hero__image-frame">
-            <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBaOM2X3OTFw3IVztG2MEIaGvqOIc0OwDPvZk1aSWt-3ttJ9VZrz3yGmUmBFoZw5tmG9f0YyOnQwf-rfw1-XYqpTz0m7nNRGvI9OQwuJtjp8gs9Y_JkVoIbzt38U4bA2t9Ys299lFyTMb0CekKJe68JUNVwJ9AN2S1arfjiXrgoo-CP6DcxKNSkpL5_7FpkaB0Iy8_jCjkX6meyw6QCK1SiMUYEf1xvYN6PC9JWsYNkGhluxiP3WJt7nnk0RX8K2lbSTkw3Hrgg0zA"
-              alt="Jeva Gold Tea"
-            />
-            <div className="hero__image-overlay" />
           </div>
         </div>
       </div>
