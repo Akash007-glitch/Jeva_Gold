@@ -1,0 +1,27 @@
+{
+    "collectionName": "components_product_variants",
+    "info": {
+        "displayName": "Variant",
+        "description": "Size variant with its own price and stock"
+    },
+    "attributes": {
+        "size": {
+            "type": "enumeration",
+            "enum": [
+                "100g",
+                "250g",
+                "500g"
+            ],
+            "required": true
+        },
+        "price": {
+            "type": "decimal",
+            "required": true
+        },
+        "stock": {
+            "type": "integer",
+            "required": true,
+            "default": 0
+        }
+    }
+}
