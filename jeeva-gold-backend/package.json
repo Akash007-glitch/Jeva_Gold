@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "description": "A Strapi application",
-  "type": "module",
   "scripts": {
     "build": "strapi build",
     "console": "strapi console",
@@ -20,12 +19,13 @@
     "@strapi/plugin-users-permissions": "5.42.0",
     "@strapi/strapi": "5.42.0",
     "better-sqlite3": "12.8.0",
-    "mongodb": "^7.1.1",
+    "mongoose": "^9.6.1",
     "razorpay": "^2.9.6",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
-    "react-router-dom": "^6.0.0",
-    "styled-components": "^6.0.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.3",
+    "styled-components": "^6.4.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^20",

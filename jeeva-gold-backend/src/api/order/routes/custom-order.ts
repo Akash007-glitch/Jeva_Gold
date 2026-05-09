@@ -1,17 +1,32 @@
-module.exports = {
-    type: 'custom',
-    routes: [
-        {
-            method: 'POST',
-            path: '/create-order',
-            handler: 'api::order.order.createOrder',
-            config: { auth: false },
-        },
-        {
-            method: 'POST',
-            path: '/verify-payment',
-            handler: 'api::order.order.verifyPayment',
-            config: { auth: false },
-        },
-    ],
+/**
+ * custom-order.ts — Custom Razorpay routes
+ *
+ * Accessible at:
+ *   POST /api/orders/create-razorpay-order
+ *   POST /api/orders/verify-payment
+ */
+
+export default {
+  routes: [
+    {
+      method: 'POST',
+      path: '/orders/create-razorpay-order',
+      handler: 'api::order.order.createRazorpayOrder',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'POST',
+      path: '/orders/verify-payment',
+      handler: 'api::order.order.verifyPayment',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      },
+    },
+  ],
 };

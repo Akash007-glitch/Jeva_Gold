@@ -1,5 +1,4 @@
-'use strict';
-
-const { createCoreRouter } = require('@strapi/strapi').factories;
-
-module.exports = createCoreRouter('api::order.order');
+// Intentionally empty — CRUD routes disabled.
+// All routes handled in custom-order.ts
+export default { routes: [] };
+console.log("Order routes loaded");

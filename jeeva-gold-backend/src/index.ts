@@ -1,5 +1,5 @@
 // import type { Core } from '@strapi/strapi';
-import connectDB from '../config/mongodb';
+import connectDB from './lib/mongodb';
 
 export default {
   /**

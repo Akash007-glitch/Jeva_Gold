@@ -1,95 +1,148 @@
-'use strict';
+import { factories } from '@strapi/strapi';
+import Razorpay from 'razorpay';
+import crypto from 'crypto';
+import Order from '../../../lib/models/Order';
 
-const Razorpay = require('razorpay');
-const nodeCrypto = require('crypto');
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const { createCoreController } = require('@strapi/strapi').factories;
+const getRazorpay = () => {
+  const key_id = process.env.RAZORPAY_KEY_ID;
+  const key_secret = process.env.RAZORPAY_KEY_SECRET;
 
-module.exports = createCoreController('api::order.order', ({ strapi }) => ({
-    async createOrder(ctx) {
-        try {
-            const razorpay = new Razorpay({
-                key_id: process.env.RAZORPAY_KEY_ID,
-                key_secret: process.env.RAZORPAY_KEY_SECRET,
-            });
+  if (!key_id || !key_secret) {
+    throw new Error('Razorpay credentials are not configured in environment variables');
+  }
 
-            const { items, customer } = ctx.request.body;
+  return new Razorpay({ key_id, key_secret });
+};
 
-            if (!items || !customer) {
-                return ctx.badRequest('Missing data');
-            }
+// ─── Controller ───────────────────────────────────────────────────────────────
 
-            let total = 0;
-            for (const item of items) {
-                const product = await strapi.entityService.findOne(
-                    'api::product.product', item.productId, { populate: ['variants'] }
-                );
-                
-                if (!product) {
-                    return ctx.badRequest(`Product with ID ${item.productId} not found`);
-                }
+export default factories.createCoreController('api::order.order', () => ({
+  /**
+   * POST /api/orders/create-razorpay-order
+   * Creates a Razorpay order and saves a pending order to MongoDB.
+   */
+  async createRazorpayOrder(ctx: any) {
+    try {
+      const {
+        customer_name,
+        customer_email,
+        customer_phone,
+        shipping_address,
+        items,
+        total_amount,
+      } = ctx.request.body;
 
-                const variant = product.variants?.find(v => v.size === item.size);
-                
-                if (!variant) {
-                    return ctx.badRequest(`Variant with size '${item.size}' not found for product ID ${item.productId}. Valid sizes are typically '100g', '250g', or '500g'.`);
-                }
+      // ── Validation ──────────────────────────────────────────────────────────
+      if (
+        !customer_name ||
+        !customer_email ||
+        !customer_phone ||
+        !shipping_address ||
+        !items ||
+        !Array.isArray(items) ||
+        items.length === 0 ||
+        !total_amount
+      ) {
+        return ctx.badRequest(
+          'Missing required fields: customer_name, customer_email, customer_phone, shipping_address, items, total_amount'
+        );
+      }
 
-                total += variant.price * item.quantity;
-            }
+      // ── Create Razorpay order ────────────────────────────────────────────────
+      const razorpay = getRazorpay();
+      const razorpayOrder = await razorpay.orders.create({
+        amount: Math.round(total_amount * 100), // convert ₹ to paise
+        currency: 'INR',
+        receipt: `receipt_${Date.now()}`,
+      });
 
-            const razorpayOrder = await razorpay.orders.create({
-                amount: Math.round(total * 100),
-                currency: 'INR',
-                receipt: `rcpt_${Date.now()}`,
-            });
+      // ── Save pending order to MongoDB ────────────────────────────────────────
+      const order = new Order({
+        customer_name,
+        customer_email,
+        customer_phone,
+        shipping_address,
+        items,
+        total_amount,
+        razorpay_order_id: razorpayOrder.id,
+        payment_status: 'pending',
+      });
+      await order.save();
 
-            const order = await strapi.entityService.create('api::order.order', {
-                data: {
-                    customer_name: customer.name,
-                    customer_email: customer.email,
-                    customer_phone: customer.phone,
-                    shipping_address: customer.address,
-                    items,
-                    total_amount: total,
-                    razorpay_order_id: razorpayOrder.id,
-                    payment_status: 'pending',
-                },
-            });
+      // ── Respond ──────────────────────────────────────────────────────────────
+      return ctx.send({
+        success: true,
+        razorpay_order_id: razorpayOrder.id,
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency,
+        key_id: process.env.RAZORPAY_KEY_ID,
+        order_id: order._id,
+      });
+    } catch (error: any) {
+      console.error('createRazorpayOrder error:', error);
+      return ctx.internalServerError(error?.message || 'Failed to create order');
+    }
+  },
 
-            ctx.body = {
-                razorpay_order_id: razorpayOrder.id,
-                key_id: process.env.RAZORPAY_KEY_ID,
-                amount: razorpayOrder.amount,
-                currency: razorpayOrder.currency,
-                orderId: order.id,
-            };
-        } catch (err) {
-            strapi.log.error(err);
-            ctx.internalServerError(err.message);
-        }
-    },
+  /**
+   * POST /api/orders/verify-payment
+   * Verifies Razorpay signature and updates order status in MongoDB.
+   */
+  async verifyPayment(ctx: any) {
+    try {
+      const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+        ctx.request.body;
 
-    async verifyPayment(ctx) {
-        try {
-            const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = ctx.request.body;
+      // ── Validation ──────────────────────────────────────────────────────────
+      if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+        return ctx.badRequest(
+          'Missing required fields: razorpay_order_id, razorpay_payment_id, razorpay_signature'
+        );
+      }
 
-            const expected = nodeCrypto
-                .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
-                .update(razorpay_order_id + '|' + razorpay_payment_id)
-                .digest('hex');
+      // ── Verify HMAC signature ────────────────────────────────────────────────
+      const key_secret = process.env.RAZORPAY_KEY_SECRET;
+      if (!key_secret) {
+        return ctx.internalServerError('Razorpay secret not configured');
+      }
 
-            if (expected !== razorpay_signature) {
-                return ctx.unauthorized('Invalid signature');
-            }
+      const body = `${razorpay_order_id}|${razorpay_payment_id}`;
+      const expectedSignature = crypto
+        .createHmac('sha256', key_secret)
+        .update(body)
+        .digest('hex');
 
-            await strapi.entityService.update('api::order.order', orderId, {
-                data: { payment_status: 'paid' },
-            });
+      const isValid = expectedSignature === razorpay_signature;
 
-            ctx.body = { success: true };
-        } catch (err) {
-            ctx.internalServerError(err.message);
-        }
-    },
+      // ── Update order in MongoDB ──────────────────────────────────────────────
+      const updatedOrder = await Order.findOneAndUpdate(
+        { razorpay_order_id },
+        {
+          payment_status: isValid ? 'paid' : 'failed',
+          razorpay_payment_id,
+        },
+        { new: true }
+      );
+
+      if (!updatedOrder) {
+        return ctx.notFound('Order not found for the given razorpay_order_id');
+      }
+
+      if (isValid) {
+        return ctx.send({
+          success: true,
+          message: 'Payment verified successfully',
+          order_id: updatedOrder._id,
+          payment_status: 'paid',
+        });
+      } else {
+        return ctx.badRequest('Payment signature verification failed');
+      }
+    } catch (error: any) {
+      console.error('verifyPayment error:', error);
+      return ctx.internalServerError(error?.message || 'Payment verification failed');
+    }
+  },
 }));

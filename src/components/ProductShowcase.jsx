@@ -11,16 +11,16 @@ import Product5Img from '../../image/MasalaChai.jpg'
 const products = [
   {
     id: 1,
-    name: "Jeeva Gold Elaichi Tea",
-    price: 499,
+    name: "Jeeva Gold Elaichi",
+    price: 270,
     description: "Jeeva Gold Elaichi Tea brings rich strength & soothing aroma of cardamon — a perfect tea experience.",
     image: Product3Img,
-    tags: ["Elaichi", "250g Pack"],
+    tags: ["Elaichi", "250g Pack of 2"],
     featured: false,
   },
   {
     id: 2,
-    name: "Jeeva Gold Tea",
+    name: "Jeeva Gold Premium",
     price: 599,
     description: "Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.",
     image: product2Img,
@@ -38,7 +38,7 @@ const products = [
   },
   {
     id: 4,
-    name: "Jeeva Gold Green Tea",
+    name: "Jeeva Gold Green",
     price: 449,
     description: "Jeeva Gold Wellness Green Tea delivers a crisp burst of antioxidants and revitalizing freshness - The ultimate reset for your body and mind.",
     image: Product4Img,
@@ -81,13 +81,12 @@ function ProductCard({ product, delay }) {
       </div>
       <p className="product-card__desc">{product.description}</p>
       <button
-        className={`product-card__btn ${
-          added
-            ? "product-card__btn--added"
-            : product.featured
-              ? "product-card__btn--primary"
-              : "product-card__btn--outline"
-        }`}
+        className={`product-card__btn ${added
+          ? "product-card__btn--added"
+          : product.featured
+            ? "product-card__btn--primary"
+            : "product-card__btn--outline"
+          }`}
         onClick={handleAddToCart}
       >
         {added ? "✓ Added to Cart" : "Add to Cart"}
