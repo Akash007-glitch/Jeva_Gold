@@ -17,15 +17,41 @@
 
 export async function initiatePayment({ items, shippingAddress, shippingMethod, onSuccess, onFailure }) {
     try {
+        const customerName = [shippingAddress?.firstName, shippingAddress?.lastName]
+            .filter(Boolean)
+            .join(" ")
+            .trim();
+        const customerAddress = [
+            shippingAddress?.street,
+            shippingAddress?.apartment,
+            shippingAddress?.city,
+            shippingAddress?.state,
+            shippingAddress?.zip,
+            shippingMethod,
+        ].filter(Boolean).join(", ");
+        const normalizedItems = (items || []).map((item) => ({
+            productId: item?.productId ?? item?.id ?? item?.product?.id,
+            size: item?.size,
+            quantity: Number(item?.quantity ?? item?.qty ?? 1),
+        }));
+
         // ── STEP 1: Ask YOUR Strapi to create a Razorpay order ──
         // Strapi will: calculate amount server-side, call Razorpay API,
         // save a pending order in DB, return the order_id
         const res = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/orders/create-razorpay-order`,
+            `${import.meta.env.VITE_API_URL}/api/create-order`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ items, shippingAddress, shippingMethod }),
+                body: JSON.stringify({
+                    items: normalizedItems,
+                    customer: {
+                        name: customerName,
+                        email: shippingAddress?.email || "",
+                        phone: shippingAddress?.phone || shippingAddress?.mobile || "",
+                        address: customerAddress,
+                    },
+                }),
             }
         );
 

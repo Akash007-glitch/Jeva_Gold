@@ -34,8 +34,8 @@ export default function InstagramGrid() {
               Follow our journey on social for brewing tips and garden updates.
             </p>
           </div>
-          <a href="#" className="instagram__handle">
-            @jevagold_tea{" "}
+          <a href="https://www.instagram.com/jeeva_gold_tea?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" className="instagram__handle" target="_blank" rel="noopener noreferrer">
+            @jeeva_gold_tea
             <span className="material-symbols-outlined">launch</span>
           </a>
         </div>

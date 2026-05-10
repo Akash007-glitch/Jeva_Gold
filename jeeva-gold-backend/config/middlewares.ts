@@ -26,6 +26,19 @@ const config: Core.Config.Middlewares = [
   },
   'strapi::poweredBy',
   'strapi::query',
+  {
+    name: 'global::payment-rate-limit',
+    config: {
+      windowMs: 60 * 1000,
+      max: 10,
+      paths: [
+        '/api/create-order',
+        '/api/verify-payment',
+        '/api/orders/create-razorpay-order',
+        '/api/orders/verify-payment',
+      ],
+    },
+  },
   'strapi::body',
   'strapi::session',
   'strapi::favicon',

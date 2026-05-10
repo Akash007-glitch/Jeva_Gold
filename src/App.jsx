@@ -54,6 +54,7 @@ export default function App() {
             <WhyChooseSection />
             <OriginStory />
             <Benefits />
+            <InstagramGrid />
           </div>
         } />
 
@@ -63,7 +64,6 @@ export default function App() {
         <Route path="/CTAWhy" element={<WhyChooseSection />} />
         <Route path="/OS" element={<OriginStory />} />
         <Route path="/Benefits" element={<Benefits />} />
-
         {/* E-commerce flow */}
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/checkout" element={<CheckoutPage />} />
@@ -72,7 +72,7 @@ export default function App() {
 
       {/* Put common global components like Footer outside <Routes> */}
       {/* <Testimonials /> */}
-      <InstagramGrid />
+      
       <Footer />
     </BrowserRouter>
   );
