@@ -1,0 +1,261 @@
+import crypto from 'crypto';
+import { z } from 'zod';
+
+const TAX_RATE = 0.18;
+const SHIPPING_FEE = 0;
+
+const productCatalog = {
+  '1': {
+    name: 'Jeeva Gold Elaichi',
+    price: 270,
+    defaultSize: '250g Pack of 2',
+  },
+  '2': {
+    name: 'Jeeva Gold Premium',
+    price: 599,
+    defaultSize: '250g',
+  },
+  '3': {
+    name: 'Jeeva Gold Masala Chai',
+    price: 549,
+    defaultSize: '250g Pack',
+  },
+  '4': {
+    name: 'Jeeva Gold Green',
+    price: 449,
+    defaultSize: '250g',
+  },
+} as const;
+
+type ProductId = keyof typeof productCatalog;
+
+export type NormalizedOrderItem = {
+  product_id: string;
+  name: string;
+  size: string;
+  price: number;
+  quantity: number;
+};
+
+export type NormalizedCreateOrder = {
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  shipping_address: string;
+  items: NormalizedOrderItem[];
+  subtotal_amount: number;
+  tax_amount: number;
+  shipping_amount: number;
+  total_amount: number;
+};
+
+export class PaymentValidationError extends Error {
+  status = 400;
+
+  constructor(message: string) {
+    super(message);
+    this.name = 'PaymentValidationError';
+  }
+}
+
+const productIdSchema = z.union([z.string(), z.number()]).transform((value) => String(value).trim());
+
+const orderItemSchema = z
+  .object({
+    product_id: productIdSchema.optional(),
+    productId: productIdSchema.optional(),
+    id: productIdSchema.optional(),
+    size: z.string().trim().min(1).max(60).optional(),
+    quantity: z.coerce.number().int().min(1).max(20).optional(),
+    qty: z.coerce.number().int().min(1).max(20).optional(),
+  })
+  .passthrough()
+  .superRefine((item, ctx) => {
+    if (!item.product_id && !item.productId && !item.id) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'Each item must include product_id',
+        path: ['product_id'],
+      });
+    }
+  });
+
+const createOrderSchema = z.object({
+  customer_name: z.string().trim().min(2).max(120),
+  customer_email: z.string().trim().email().max(160),
+  customer_phone: z
+    .string()
+    .trim()
+    .min(7)
+    .max(20)
+    .regex(/^[0-9+\-\s()]+$/, 'Invalid phone number'),
+  shipping_address: z.string().trim().min(10).max(500),
+  items: z.array(orderItemSchema).min(1).max(20),
+  total_amount: z.coerce.number().positive().optional(),
+});
+
+const verifyPaymentSchema = z.object({
+  razorpay_order_id: z.string().trim().min(1),
+  razorpay_payment_id: z.string().trim().min(1),
+  razorpay_signature: z.string().trim().min(1),
+});
+
+const webhookPayloadSchema = z
+  .object({
+    event: z.string().trim().min(1),
+    payload: z
+      .object({
+        payment: z
+          .object({
+            entity: z
+              .object({
+                id: z.string().optional(),
+                order_id: z.string().optional(),
+                status: z.string().optional(),
+              })
+              .passthrough(),
+          })
+          .optional(),
+        order: z
+          .object({
+            entity: z
+              .object({
+                id: z.string().optional(),
+                status: z.string().optional(),
+              })
+              .passthrough(),
+          })
+          .optional(),
+      })
+      .passthrough(),
+  })
+  .passthrough();
+
+const formatZodError = (error: z.ZodError) =>
+  error.issues.map((issue) => `${issue.path.join('.') || 'body'}: ${issue.message}`).join('; ');
+
+const getProductId = (item: z.infer<typeof orderItemSchema>) =>
+  String(item.product_id || item.productId || item.id).trim();
+
+const assertKnownProduct = (productId: string) => {
+  const product = productCatalog[productId as ProductId];
+  if (!product) {
+    throw new PaymentValidationError(`Unknown product_id: ${productId}`);
+  }
+
+  return product;
+};
+
+export const calculateTotals = (items: NormalizedOrderItem[]) => {
+  const subtotal_amount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const tax_amount = Math.round(subtotal_amount * TAX_RATE);
+  const shipping_amount = SHIPPING_FEE;
+
+  return {
+    subtotal_amount,
+    tax_amount,
+    shipping_amount,
+    total_amount: subtotal_amount + tax_amount + shipping_amount,
+  };
+};
+
+export const normalizeCreateOrderPayload = (body: unknown): NormalizedCreateOrder => {
+  const result = createOrderSchema.safeParse(body);
+  if (!result.success) {
+    throw new PaymentValidationError(formatZodError(result.error));
+  }
+
+  const items = result.data.items.map((item) => {
+    const productId = getProductId(item);
+    const product = assertKnownProduct(productId);
+
+    return {
+      product_id: productId,
+      name: product.name,
+      size: item.size || product.defaultSize,
+      price: product.price,
+      quantity: item.quantity || item.qty || 1,
+    };
+  });
+
+  const totals = calculateTotals(items);
+
+  if (
+    result.data.total_amount !== undefined &&
+    Math.abs(result.data.total_amount - totals.total_amount) > 1
+  ) {
+    throw new PaymentValidationError('Order total mismatch. Please refresh your cart and try again.');
+  }
+
+  return {
+    customer_name: result.data.customer_name,
+    customer_email: result.data.customer_email,
+    customer_phone: result.data.customer_phone,
+    shipping_address: result.data.shipping_address,
+    items,
+    ...totals,
+  };
+};
+
+export const validateVerifyPaymentPayload = (body: unknown) => {
+  const result = verifyPaymentSchema.safeParse(body);
+  if (!result.success) {
+    throw new PaymentValidationError(formatZodError(result.error));
+  }
+
+  return result.data;
+};
+
+export const createHmacSignature = (body: string, secret: string) =>
+  crypto.createHmac('sha256', secret).update(body).digest('hex');
+
+export const isValidSignature = (body: string, signature: string, secret: string) => {
+  const expected = createHmacSignature(body, secret);
+  const actualBuffer = Buffer.from(signature);
+  const expectedBuffer = Buffer.from(expected);
+
+  return actualBuffer.length === expectedBuffer.length && crypto.timingSafeEqual(actualBuffer, expectedBuffer);
+};
+
+export const getWebhookRawBody = (ctx: any) => {
+  const unparsedBody = ctx.request?.body?.[Symbol.for('unparsedBody')];
+
+  if (Buffer.isBuffer(unparsedBody)) {
+    return unparsedBody.toString('utf8');
+  }
+
+  if (typeof unparsedBody === 'string') {
+    return unparsedBody;
+  }
+
+  return JSON.stringify(ctx.request?.body || {});
+};
+
+export const getWebhookOrderUpdate = (body: unknown) => {
+  const result = webhookPayloadSchema.safeParse(body);
+  if (!result.success) {
+    throw new PaymentValidationError(formatZodError(result.error));
+  }
+
+  const payment = result.data.payload.payment?.entity;
+  const order = result.data.payload.order?.entity;
+  const razorpay_order_id = payment?.order_id || order?.id;
+
+  if (!razorpay_order_id) {
+    throw new PaymentValidationError('Webhook payload is missing a Razorpay order id');
+  }
+
+  const event = result.data.event;
+  const isPaid = event === 'payment.captured' || event === 'order.paid' || payment?.status === 'captured';
+  const isFailed = event === 'payment.failed' || payment?.status === 'failed';
+
+  if (!isPaid && !isFailed) {
+    return null;
+  }
+
+  return {
+    razorpay_order_id,
+    razorpay_payment_id: payment?.id,
+    payment_status: isPaid ? 'paid' : 'failed',
+  };
+};

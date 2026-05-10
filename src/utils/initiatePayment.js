@@ -29,13 +29,17 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
             shippingAddress?.zip,
             shippingMethod,
         ].filter(Boolean).join(", ");
-        const normalizedItems = (items || []).map((item) => ({
-            product_id: item?.productId ?? item?.id ?? item?.product?.id,
-            name: item?.name,
-            price: Number(item?.price ?? 0),
-            size: item?.size,
-            quantity: Number(item?.quantity ?? item?.qty ?? 1),
-        }));
+        const normalizedItems = (items || []).map((item) => {
+            const packTag = item?.tags?.find((tag) => /pack|g\b/i.test(tag));
+
+            return {
+                product_id: item?.productId ?? item?.id ?? item?.product?.id,
+                name: item?.name,
+                price: Number(item?.price ?? 0),
+                size: item?.size || item?.weight || packTag || "Standard Pack",
+                quantity: Number(item?.quantity ?? item?.qty ?? 1),
+            };
+        });
         const apiBase = import.meta.env.VITE_API_URL;
 
         // ── STEP 1: Ask YOUR Strapi to create a Razorpay order ──

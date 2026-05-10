@@ -4,6 +4,7 @@
  * Accessible at:
  *   POST /api/orders/create-razorpay-order
  *   POST /api/orders/verify-payment
+ *   POST /api/orders/razorpay-webhook
  */
 
 export default {
@@ -22,6 +23,16 @@ export default {
       method: 'POST',
       path: '/orders/verify-payment',
       handler: 'api::order.order.verifyPayment',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'POST',
+      path: '/orders/razorpay-webhook',
+      handler: 'api::order.order.razorpayWebhook',
       config: {
         auth: false,
         policies: [],

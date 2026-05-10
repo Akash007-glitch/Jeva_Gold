@@ -1,9 +1,13 @@
 import { factories } from '@strapi/strapi';
 import Razorpay from 'razorpay';
-import crypto from 'crypto';
-import Order from '../../../lib/models/Order';
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+import {
+  PaymentValidationError,
+  getWebhookOrderUpdate,
+  getWebhookRawBody,
+  isValidSignature,
+  normalizeCreateOrderPayload,
+  validateVerifyPaymentPayload,
+} from '../services/payment';
 
 const getRazorpay = () => {
   const key_id = process.env.RAZORPAY_KEY_ID;
@@ -16,133 +20,166 @@ const getRazorpay = () => {
   return new Razorpay({ key_id, key_secret });
 };
 
-// ─── Controller ───────────────────────────────────────────────────────────────
+const handleControllerError = (ctx: any, error: any, fallbackMessage: string) => {
+  if (error instanceof PaymentValidationError) {
+    return ctx.badRequest(error.message);
+  }
 
-export default factories.createCoreController('api::order.order', () => ({
-  /**
-   * POST /api/orders/create-razorpay-order
-   * Creates a Razorpay order and saves a pending order to MongoDB.
-   */
+  console.error(fallbackMessage, error);
+  return ctx.internalServerError(error?.message || fallbackMessage);
+};
+
+export default factories.createCoreController('api::order.order', ({ strapi }) => ({
   async createRazorpayOrder(ctx: any) {
     try {
-      const {
-        customer_name,
-        customer_email,
-        customer_phone,
-        shipping_address,
-        items,
-        total_amount,
-      } = ctx.request.body;
+      const orderInput = normalizeCreateOrderPayload(ctx.request.body);
 
-      // ── Validation ──────────────────────────────────────────────────────────
-      if (
-        !customer_name ||
-        !customer_email ||
-        !customer_phone ||
-        !shipping_address ||
-        !items ||
-        !Array.isArray(items) ||
-        items.length === 0 ||
-        !total_amount
-      ) {
-        return ctx.badRequest(
-          'Missing required fields: customer_name, customer_email, customer_phone, shipping_address, items, total_amount'
-        );
-      }
-
-      // ── Create Razorpay order ────────────────────────────────────────────────
       const razorpay = getRazorpay();
       const razorpayOrder = await razorpay.orders.create({
-        amount: Math.round(total_amount * 100), // convert ₹ to paise
+        amount: Math.round(orderInput.total_amount * 100),
         currency: 'INR',
         receipt: `receipt_${Date.now()}`,
       });
 
-      // ── Save pending order to MongoDB ────────────────────────────────────────
-      const order = new Order({
-        customer_name,
-        customer_email,
-        customer_phone,
-        shipping_address,
-        items,
-        total_amount,
-        razorpay_order_id: razorpayOrder.id,
-        payment_status: 'pending',
+      const order = await strapi.db.query('api::order.order').create({
+        data: {
+          customer_name: orderInput.customer_name,
+          customer_email: orderInput.customer_email,
+          customer_phone: orderInput.customer_phone,
+          shipping_address: orderInput.shipping_address,
+          items: orderInput.items,
+          subtotal_amount: orderInput.subtotal_amount,
+          tax_amount: orderInput.tax_amount,
+          shipping_amount: orderInput.shipping_amount,
+          total_amount: orderInput.total_amount,
+          razorpay_order_id: razorpayOrder.id,
+          payment_status: 'pending',
+        },
       });
-      await order.save();
 
-      // ── Respond ──────────────────────────────────────────────────────────────
       return ctx.send({
         success: true,
         razorpay_order_id: razorpayOrder.id,
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency,
         key_id: process.env.RAZORPAY_KEY_ID,
-        order_id: order._id,
+        order_id: order.id,
+        totals: {
+          subtotal_amount: orderInput.subtotal_amount,
+          tax_amount: orderInput.tax_amount,
+          shipping_amount: orderInput.shipping_amount,
+          total_amount: orderInput.total_amount,
+        },
       });
     } catch (error: any) {
-      console.error('createRazorpayOrder error:', error);
-      return ctx.internalServerError(error?.message || 'Failed to create order');
+      return handleControllerError(ctx, error, 'Failed to create order');
     }
   },
 
-  /**
-   * POST /api/orders/verify-payment
-   * Verifies Razorpay signature and updates order status in MongoDB.
-   */
   async verifyPayment(ctx: any) {
     try {
-      const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-        ctx.request.body;
-
-      // ── Validation ──────────────────────────────────────────────────────────
-      if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-        return ctx.badRequest(
-          'Missing required fields: razorpay_order_id, razorpay_payment_id, razorpay_signature'
-        );
-      }
-
-      // ── Verify HMAC signature ────────────────────────────────────────────────
+      const payment = validateVerifyPaymentPayload(ctx.request.body);
       const key_secret = process.env.RAZORPAY_KEY_SECRET;
+
       if (!key_secret) {
         return ctx.internalServerError('Razorpay secret not configured');
       }
 
-      const body = `${razorpay_order_id}|${razorpay_payment_id}`;
-      const expectedSignature = crypto
-        .createHmac('sha256', key_secret)
-        .update(body)
-        .digest('hex');
+      const order = await strapi.db.query('api::order.order').findOne({
+        where: { razorpay_order_id: payment.razorpay_order_id },
+      });
 
-      const isValid = expectedSignature === razorpay_signature;
-
-      // ── Update order in MongoDB ──────────────────────────────────────────────
-      const updatedOrder = await Order.findOneAndUpdate(
-        { razorpay_order_id },
-        {
-          payment_status: isValid ? 'paid' : 'failed',
-          razorpay_payment_id,
-        },
-        { new: true }
-      );
-
-      if (!updatedOrder) {
+      if (!order) {
         return ctx.notFound('Order not found for the given razorpay_order_id');
       }
 
-      if (isValid) {
-        return ctx.send({
-          success: true,
-          message: 'Payment verified successfully',
-          order_id: updatedOrder._id,
-          payment_status: 'paid',
-        });
-      } else {
+      const signatureBody = `${payment.razorpay_order_id}|${payment.razorpay_payment_id}`;
+      const isValid = isValidSignature(signatureBody, payment.razorpay_signature, key_secret);
+
+      const updatedOrder = await strapi.db.query('api::order.order').update({
+        where: { id: order.id },
+        data: {
+          payment_status: isValid ? 'paid' : 'failed',
+          razorpay_payment_id: payment.razorpay_payment_id,
+        },
+      });
+
+      if (!isValid) {
         return ctx.badRequest('Payment signature verification failed');
       }
+
+      return ctx.send({
+        success: true,
+        message: 'Payment verified successfully',
+        order_id: updatedOrder.id,
+        payment_status: 'paid',
+      });
     } catch (error: any) {
-      console.error('verifyPayment error:', error);
-      return ctx.internalServerError(error?.message || 'Payment verification failed');
+      return handleControllerError(ctx, error, 'Payment verification failed');
+    }
+  },
+
+  async razorpayWebhook(ctx: any) {
+    try {
+      const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
+      const webhookSignature = ctx.get('x-razorpay-signature');
+
+      if (!webhookSecret) {
+        return ctx.internalServerError('Razorpay webhook secret not configured');
+      }
+
+      if (!webhookSignature) {
+        return ctx.badRequest('Missing Razorpay webhook signature');
+      }
+
+      const rawBody = getWebhookRawBody(ctx);
+      if (!isValidSignature(rawBody, webhookSignature, webhookSecret)) {
+        return ctx.badRequest('Invalid Razorpay webhook signature');
+      }
+
+      const update = getWebhookOrderUpdate(ctx.request.body);
+      if (!update) {
+        return ctx.send({ success: true, ignored: true });
+      }
+
+      const order = await strapi.db.query('api::order.order').findOne({
+        where: { razorpay_order_id: update.razorpay_order_id },
+      });
+
+      if (!order) {
+        ctx.status = 202;
+        ctx.body = {
+          success: true,
+          accepted: true,
+          message: 'Webhook accepted, but order was not found locally',
+        };
+        return;
+      }
+
+      if (order.payment_status === 'paid' && update.payment_status === 'failed') {
+        return ctx.send({ success: true, ignored: true, payment_status: 'paid' });
+      }
+
+      const data: Record<string, string> = {
+        payment_status: update.payment_status,
+      };
+
+      if (update.razorpay_payment_id) {
+        data.razorpay_payment_id = update.razorpay_payment_id;
+      }
+
+      const updatedOrder = await strapi.db.query('api::order.order').update({
+        where: { id: order.id },
+        data,
+      });
+
+      return ctx.send({
+        success: true,
+        order_id: updatedOrder.id,
+        payment_status: updatedOrder.payment_status,
+      });
+    } catch (error: any) {
+      return handleControllerError(ctx, error, 'Razorpay webhook handling failed');
     }
   },
 }));

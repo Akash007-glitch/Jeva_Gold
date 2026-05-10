@@ -12,10 +12,9 @@ type Bucket = {
 const buckets = new Map<string, Bucket>();
 
 const defaultPaths = [
-  '/api/create-order',
-  '/api/verify-payment',
   '/api/orders/create-razorpay-order',
   '/api/orders/verify-payment',
+  '/api/orders/razorpay-webhook',
 ];
 
 const getClientIp = (ctx: any) =>

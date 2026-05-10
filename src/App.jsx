@@ -13,7 +13,6 @@ import VisualTeaserSection from "./components/VisualTeaserSection";
 import WhyChooseSection from "./components/WhyChooseSection";
 import ShoppingCart from './components/ShoppingCart'
 import CheckoutPage from './components/CheckoutPage'
-import PaymentGateway from './components/PaymentGateway'
 import OrderSuccess from "./components/OrderSuccess";
 
 // inside your router:

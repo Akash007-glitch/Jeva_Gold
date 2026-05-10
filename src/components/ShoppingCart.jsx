@@ -167,7 +167,7 @@ const ShoppingCart = () => {
 
             <p className="sc-eco-note">
               Every purchase supports sustainable farming practices in the upper Assam valley.
-              Complimentary shipping on orders over ₹10,000.
+              Complimentary shipping is included on every order.
             </p>
           </div>
         </div>

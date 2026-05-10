@@ -31,11 +31,26 @@
             "type": "json",
             "required": true
         },
+        "subtotal_amount": {
+            "type": "decimal",
+            "required": true
+        },
+        "tax_amount": {
+            "type": "decimal",
+            "required": true
+        },
+        "shipping_amount": {
+            "type": "decimal",
+            "required": true
+        },
         "total_amount": {
             "type": "decimal",
             "required": true
         },
         "razorpay_order_id": {
+            "type": "string"
+        },
+        "razorpay_payment_id": {
             "type": "string"
         },
         "payment_status": {

@@ -32,14 +32,18 @@ const config: Core.Config.Middlewares = [
       windowMs: 60 * 1000,
       max: 10,
       paths: [
-        '/api/create-order',
-        '/api/verify-payment',
         '/api/orders/create-razorpay-order',
         '/api/orders/verify-payment',
+        '/api/orders/razorpay-webhook',
       ],
     },
   },
-  'strapi::body',
+  {
+    name: 'strapi::body',
+    config: {
+      includeUnparsed: true,
+    },
+  },
   'strapi::session',
   'strapi::favicon',
   'strapi::public',

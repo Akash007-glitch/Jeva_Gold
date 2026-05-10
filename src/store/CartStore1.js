@@ -41,7 +41,7 @@ export const useCartStore = create((set, get) => ({
         }));
     },
 
-    // Called after successful payment in PaymentGateway
+    // Called after successful Razorpay payment
     clearCart: () => set({ items: [] }),
 
     // Derived values — call these anywhere, they always reflect live state
@@ -49,21 +49,20 @@ export const useCartStore = create((set, get) => ({
         get().items.reduce((sum, i) => sum + i.price * i.qty, 0),
 
     getShipping: () => {
-        // Free over ₹10,000, otherwise ₹850
-        const subtotal = get().items.reduce((sum, i) => sum + i.price * i.qty, 0);
-        return subtotal >= 0 ? 0 : 0;
+        // Current offer: complimentary shipping on all orders.
+        return 0;
     },
 
     getTax: () => {
         // 18% GST on subtotal
         const subtotal = get().items.reduce((sum, i) => sum + i.price * i.qty, 0);
-        return Math.round(subtotal * 0);
+        return Math.round(subtotal * 0.18);
     },
 
     getTotal: () => {
         const subtotal = get().items.reduce((sum, i) => sum + i.price * i.qty, 0);
-        const shipping = subtotal >= 0 ? 0 : 0;
-        const tax = Math.round(subtotal * 0);
+        const shipping = 0;
+        const tax = Math.round(subtotal * 0.18);
         return subtotal + shipping + tax;
     },
 }));

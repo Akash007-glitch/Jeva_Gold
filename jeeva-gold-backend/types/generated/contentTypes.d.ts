@@ -496,7 +496,11 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
       Schema.Attribute.DefaultTo<'pending'>;
     publishedAt: Schema.Attribute.DateTime;
     razorpay_order_id: Schema.Attribute.String;
+    razorpay_payment_id: Schema.Attribute.String;
     shipping_address: Schema.Attribute.Text & Schema.Attribute.Required;
+    shipping_amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    subtotal_amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    tax_amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
     total_amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
