@@ -15,7 +15,7 @@
 // Strapi is the only place that knows RAZORPAY_KEY_SECRET.
 // ─────────────────────────────────────────────
 
-export async function initiatePayment({ items, shippingAddress, shippingMethod, onSuccess, onFailure }) {
+export async function initiatePayment({ items, shippingAddress, shippingMethod, totalAmount, onSuccess, onFailure }) {
     try {
         const customerName = [shippingAddress?.firstName, shippingAddress?.lastName]
             .filter(Boolean)
@@ -30,32 +30,37 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
             shippingMethod,
         ].filter(Boolean).join(", ");
         const normalizedItems = (items || []).map((item) => ({
-            productId: item?.productId ?? item?.id ?? item?.product?.id,
+            product_id: item?.productId ?? item?.id ?? item?.product?.id,
+            name: item?.name,
+            price: Number(item?.price ?? 0),
             size: item?.size,
             quantity: Number(item?.quantity ?? item?.qty ?? 1),
         }));
+        const apiBase = import.meta.env.VITE_API_URL;
 
         // ── STEP 1: Ask YOUR Strapi to create a Razorpay order ──
         // Strapi will: calculate amount server-side, call Razorpay API,
         // save a pending order in DB, return the order_id
         const res = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/create-order`,
+            `${apiBase}/api/orders/create-razorpay-order`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
+                    customer_name: customerName,
+                    customer_email: shippingAddress?.email || "",
+                    customer_phone: shippingAddress?.phone || shippingAddress?.mobile || "",
+                    shipping_address: customerAddress,
                     items: normalizedItems,
-                    customer: {
-                        name: customerName,
-                        email: shippingAddress?.email || "",
-                        phone: shippingAddress?.phone || shippingAddress?.mobile || "",
-                        address: customerAddress,
-                    },
+                    total_amount: Number(totalAmount || 0),
                 }),
             }
         );
 
-        if (!res.ok) throw new Error("Failed to create order on server");
+        if (!res.ok) {
+            const message = await res.text();
+            throw new Error(message || "Failed to create order on server");
+        }
 
         const orderData = await res.json();
         // orderData = { razorpay_order_id, amount, currency, key_id }
@@ -81,7 +86,7 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
 
                 // ── STEP 4: Send all 3 to YOUR Strapi for verification ──
                 const verify = await fetch(
-                    `${import.meta.env.VITE_API_URL}/api/orders/verify-payment`,
+                    `${apiBase}/api/orders/verify-payment`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },

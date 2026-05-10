@@ -22,6 +22,8 @@ const CheckoutPage = () => {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
+    email: "",
+    phone: "",
     street: "",
     apartment: "",
     city: "",
@@ -51,7 +53,7 @@ const CheckoutPage = () => {
   // ── This is what the "Proceed to Payment" button calls ──
   const handleProceed = async () => {
     // Basic validation
-    if (!form.firstName || !form.street || !form.city || !form.zip) {
+    if (!form.firstName || !form.email || !form.phone || !form.street || !form.city || !form.zip) {
       setError("Please fill in all required address fields.");
       return;
     }
@@ -65,6 +67,7 @@ const CheckoutPage = () => {
       items,           // from Zustand — [{id, name, price, qty, ...}]
       shippingAddress: form,     // from local state
       shippingMethod,            // "standard" or "express"
+      totalAmount: getTotal(),
 
       onSuccess: (paymentId) => {
         clearCart();   // wipe Zustand store
@@ -104,6 +107,14 @@ const CheckoutPage = () => {
                   <label>Last Name</label>
                   <input name="lastName" type="text" placeholder="Vance" value={form.lastName} onChange={handleChange} />
                 </div>
+                <div className="co-field">
+                  <label>Email *</label>
+                  <input name="email" type="email" placeholder="julian@example.com" value={form.email} onChange={handleChange} />
+                </div>
+                <div className="co-field">
+                  <label>Phone *</label>
+                  <input name="phone" type="tel" placeholder="9876543210" value={form.phone} onChange={handleChange} />
+                </div>
                 <div className="co-field co-field-full">
                   <label>Street Address *</label>
                   <input name="street" type="text" placeholder="124 Forest Canopy Lane" value={form.street} onChange={handleChange} />
@@ -130,7 +141,7 @@ const CheckoutPage = () => {
             </section>
 
             {/* Shipping Method — local state, sent to Strapi with order */}
-            <section className="co-section">
+            {/* <section className="co-section">
               <h2>Shipping Method</h2>
               <div className="co-shipping-options">
                 {shippingOptions.map((opt) => (
@@ -152,7 +163,7 @@ const CheckoutPage = () => {
                   </label>
                 ))}
               </div>
-            </section>
+            </section> */}
 
             {/* Error display */}
             {error && (
