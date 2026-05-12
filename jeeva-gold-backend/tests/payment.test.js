@@ -15,16 +15,16 @@ test('normalizes create-order input and calculates trusted totals', () => {
   assert.deepEqual(order.items, [
     {
       product_id: '2',
-      name: 'Jeeva Gold Premium',
-      size: '250g',
-      price: 599,
+      name: 'Jeeva Gold Premium Tea',
+      size: '250g x 2 Pack',
+      price: 210,
       quantity: 2,
     },
   ]);
-  assert.equal(order.subtotal_amount, 1198);
-  assert.equal(order.tax_amount, 216);
+  assert.equal(order.subtotal_amount, 420);
+  assert.equal(order.tax_amount, 76);
   assert.equal(order.shipping_amount, 0);
-  assert.equal(order.total_amount, 1414);
+  assert.equal(order.total_amount, 496);
 });
 
 test('rejects tampered create-order totals', () => {

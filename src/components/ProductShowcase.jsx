@@ -20,11 +20,11 @@ const products = [
   },
   {
     id: 2,
-    name: "Jeeva Gold Premium",
-    price: 599,
+    name: "Jeeva Gold Premium Tea",
+    price: 210,
     description: "Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.",
     image: product2Img,
-    tags: ["Best Seller", "Premium Assam"],
+    tags: ["250g x 2 Pack", "Premium Assam"],
     featured: true,
   },
   {

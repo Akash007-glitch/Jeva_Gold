@@ -11,9 +11,9 @@ const productCatalog = {
     defaultSize: '250g Pack of 2',
   },
   '2': {
-    name: 'Jeeva Gold Premium',
-    price: 599,
-    defaultSize: '250g',
+    name: 'Jeeva Gold Premium Tea',
+    price: 210,
+    defaultSize: '250g x 2 Pack',
   },
   '3': {
     name: 'Jeeva Gold Masala Chai',
