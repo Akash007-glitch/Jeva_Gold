@@ -6,6 +6,7 @@ import product2Img from '../../image/product2.jpeg';
 import Product3Img from '../../image/Elaichi.jpg'
 import Product4Img from '../../image/GreenTea.jpg'
 import Product5Img from '../../image/MasalaChai.jpg'
+import RoyalTeaImg from '../../image/product6.png'
 
 
 const products = [
@@ -13,37 +14,67 @@ const products = [
     id: 1,
     name: "Jeeva Gold Elaichi",
     price: 270,
+    quantity: "250g × 2 Pack",
     description: "Jeeva Gold Elaichi Tea brings rich strength & soothing aroma of cardamon — a perfect tea experience.",
     image: Product3Img,
     tags: ["Elaichi", "250g Pack of 2"],
     featured: false,
+    showPack: true,
   },
   {
     id: 2,
     name: "Jeeva Gold Premium Tea",
     price: 210,
+    quantity: "250g × 2 Pack",
     description: "Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.",
     image: product2Img,
     tags: ["250g x 2 Pack", "Premium Assam"],
     featured: true,
+    showPack: true,
   },
   {
     id: 3,
     name: "Jeeva Gold Masala Chai",
-    price: 549,
+    price: 290,
+    quantity: "250g x 2 Pack",
     description: "Jeeva Gold Masala Chai is a rich fusion of premium tea and aromatic spices , crafted for a strong and flavorful cup that warms your senses & provides a refreshing Masala Chai experience.",
     image: Product5Img,
     tags: ["Masala", "250g Pack"],
     featured: false,
+    showPack: true,
   },
   {
     id: 4,
     name: "Jeeva Gold Green",
-    price: 449,
+    price: 280,
+    quantity: "250g × 2 Pack",
     description: "Jeeva Gold Wellness Green Tea delivers a crisp burst of antioxidants and revitalizing freshness - The ultimate reset for your body and mind.",
     image: Product4Img,
     tags: ["Green Tea", "Wellness"],
     featured: false,
+    showPack: true,
+  },
+  {
+    id: 5,
+    name: "Jeeva Gold Premium Tea",
+    price: 410,
+    quantity: "1 KG Pack",
+    description: "Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.",
+    image: product2Img,
+    tags: ["1KG", "Premium Assam"],
+    featured: false,
+    showPack: true,
+  },
+  {
+    id: 6,
+    name: "Jeeva Gold Royal Tea",
+    price: 520,
+    quantity: "1 KG Pack",
+    description: "Jeeva Gold Royal Tea brings a sophisticated and elegant tea experience with its premium blend and rich aroma.",
+    image: RoyalTeaImg,
+    tags: ["1KG", "Premium Assam"],
+    featured: false,
+    showPack: false,
   },
 ];
 
@@ -70,6 +101,12 @@ function ProductCard({ product, delay }) {
   return (
     <div className={`product-card reveal reveal--delay-${delay}${product.featured ? " product-card--featured" : ""}`}>
       <div className="product-card__image-wrap">
+        {/* {product.showPack && (
+          <span className="product-card__pack-badge">
+            <span className="product-card__pack-icon">📦</span>
+            2 PACK
+          </span>
+        )} */}
         {product.featured && (
           <span className="product-card__badge">Best Seller</span>
         )}
@@ -79,6 +116,12 @@ function ProductCard({ product, delay }) {
         <h3 className="product-card__name">{product.name}</h3>
         <span className="product-card__price">₹{product.price}</span>
       </div>
+      {product.quantity && (
+        <div className="product-card__qty">
+          <span className="product-card__qty-icon"></span>
+          {product.quantity}
+        </div>
+      )}
       <p className="product-card__desc">{product.description}</p>
       <button
         className={`product-card__btn ${added
@@ -89,7 +132,7 @@ function ProductCard({ product, delay }) {
           }`}
         onClick={handleAddToCart}
       >
-        {added ? "✓ Added to Cart" : "Add to Cart"}
+        {added ? "✓ Added to Cart" : "🛒 Add to Cart"}
       </button>
     </div>
   );
@@ -99,17 +142,53 @@ export default function ProductShowcase() {
   return (
     <section className="products section-py" id="collection">
       <div className="container">
+
+        {/* ── Revamped Header ── */}
         <div className="products__header reveal">
-          <h2 className="products__title">Our Premium Selection</h2>
+          <div className="products__title-row">
+            <span className="products__leaf products__leaf--left">🌿</span>
+            <h2 className="products__title">Our Premium Selection</h2>
+            <span className="products__leaf products__leaf--right">🌿</span>
+          </div>
           <p className="products__subtitle">
             Handpicked variety of the finest teas from the world's largest tea-growing region.
           </p>
         </div>
+
+        {/* ── Product Grid ── */}
         <div className="products__grid">
           {products.map((product, i) => (
             <ProductCard key={product.id} product={product} delay={i + 1} />
           ))}
         </div>
+
+        {/* ── Bottom Feature Strip ── */}
+        <div className="products__features reveal">
+          <div className="products__feature">
+            <span className="products__feature-icon">🌿</span>
+            <div>
+              <p className="products__feature-title">Premium Quality</p>
+              <p className="products__feature-sub">Carefully selected leaves</p>
+            </div>
+          </div>
+          <div className="products__feature-divider" />
+          <div className="products__feature">
+            <span className="products__feature-icon">🌿</span>
+            <div>
+              <p className="products__feature-title">Natural &amp; Pure</p>
+              <p className="products__feature-sub">100% natural ingredients</p>
+            </div>
+          </div>
+          <div className="products__feature-divider" />
+          <div className="products__feature">
+            <span className="products__feature-icon">🌿</span>
+            <div>
+              <p className="products__feature-title">Fresh &amp; Flavorful</p>
+              <p className="products__feature-sub">Rich taste in every sip</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   );
