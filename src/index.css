@@ -92,11 +92,20 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 /* ─── Scroll Reveal ────────────────────────────────────────── */
+
+/* Offset anchored sections below the fixed navbar (~72px) */
+section[id] {
+  scroll-margin-top: 80px;
+}
+
+/* Base reveal — slides up and fades in */
 .reveal {
   opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(48px);
+  transition:
+    opacity  0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
 
 .reveal.is-visible {
@@ -104,13 +113,50 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   transform: none;
 }
 
-.reveal--left  { transform: translateX(-40px); }
-.reveal--right { transform: translateX(40px); }
+/* Directional variants */
+.reveal--left  { transform: translateX(-52px) translateY(0); }
+.reveal--right { transform: translateX(52px)  translateY(0); }
 .reveal--left.is-visible,
 .reveal--right.is-visible { transform: none; }
 
-.reveal--delay-1 { transition-delay: 0.1s; }
-.reveal--delay-2 { transition-delay: 0.2s; }
-.reveal--delay-3 { transition-delay: 0.3s; }
-.reveal--delay-4 { transition-delay: 0.4s; }
+/* Scale+fade variant (for cards / badges) */
+.reveal--scale {
+  transform: scale(0.9) translateY(20px);
+}
+.reveal--scale.is-visible {
+  transform: scale(1) translateY(0);
+}
 
+/* Blur variant (for hero headings) */
+.reveal--blur {
+  filter: blur(6px);
+  transition:
+    opacity  0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    filter   0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal--blur.is-visible { filter: blur(0); }
+
+/* Stagger delays — 8 steps */
+.reveal--delay-1 { transition-delay: 0.08s; }
+.reveal--delay-2 { transition-delay: 0.16s; }
+.reveal--delay-3 { transition-delay: 0.24s; }
+.reveal--delay-4 { transition-delay: 0.32s; }
+.reveal--delay-5 { transition-delay: 0.40s; }
+.reveal--delay-6 { transition-delay: 0.48s; }
+.reveal--delay-7 { transition-delay: 0.56s; }
+.reveal--delay-8 { transition-delay: 0.64s; }
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal--left,
+  .reveal--right,
+  .reveal--scale,
+  .reveal--blur {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+}

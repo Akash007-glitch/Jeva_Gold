@@ -39,7 +39,7 @@ const products = [
     quantity: "250g x 2 Pack",
     description: "Jeeva Gold Masala Chai is a rich fusion of premium tea and aromatic spices , crafted for a strong and flavorful cup that warms your senses & provides a refreshing Masala Chai experience.",
     image: Product5Img,
-    tags: ["Masala", "250g Pack"],
+    tags: ["250g x 2 Pack", "Masala"],
     featured: false,
     showPack: true,
   },

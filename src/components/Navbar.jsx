@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCartStore } from "../store/CartStore1";
 import logo from '../../image/logo.png';
 import './Navbar.css';
@@ -8,6 +8,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Get live cart count from Zustand
   const items = useCartStore((state) => state.items);
@@ -18,6 +19,32 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Smooth scroll handler for hash links within React Router SPA
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
+    const [path, hash] = href.split("#");
+    const targetId = hash || null;
+
+    const scrollToSection = () => {
+      if (targetId) {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    };
+
+    if (location.pathname !== "/" && location.pathname !== path) {
+      // Navigate to home first, then scroll after mount
+      navigate("/");
+      setTimeout(scrollToSection, 350);
+    } else {
+      scrollToSection();
+    }
+  };
 
   const navLinks = [
     { label: "Home", href: "/" },
@@ -38,7 +65,12 @@ export default function Navbar() {
         {/* Desktop Links */}
         <div className="navbar__links">
           {navLinks.map((link) => (
-            <a key={link.label} href={link.href} className="navbar__link">
+            <a
+              key={link.label}
+              href={link.href}
+              className="navbar__link"
+              onClick={(e) => handleNavClick(e, link.href)}
+            >
               {link.label}
             </a>
           ))}
@@ -114,7 +146,7 @@ export default function Navbar() {
               key={link.label}
               href={link.href}
               className="navbar__mobile-link"
-              onClick={() => setMenuOpen(false)}
+              onClick={(e) => { handleNavClick(e, link.href); setMenuOpen(false); }}
             >
               {link.label}
             </a>

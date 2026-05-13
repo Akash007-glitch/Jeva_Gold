@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import ProductShowcase from "./components/ProductShowcase";
@@ -15,34 +15,44 @@ import ShoppingCart from './components/ShoppingCart'
 import CheckoutPage from './components/CheckoutPage'
 import OrderSuccess from "./components/OrderSuccess";
 
-// inside your router:
+// Scroll-reveal observer — lives inside the router so it can watch location
+function ScrollReveal() {
+  const location = useLocation();
 
+  useEffect(() => {
+    // Small delay to allow new page to render before observing
+    const timer = setTimeout(() => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target); // fire once
+            }
+          });
+        },
+        {
+          threshold: 0.08,
+          rootMargin: "0px 0px -40px 0px", // trigger 40px before bottom edge
+        }
+      );
+
+      const targets = document.querySelectorAll(".reveal:not(.is-visible)");
+      targets.forEach((el) => observer.observe(el));
+
+      return () => observer.disconnect();
+    }, 80);
+
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  return null;
+}
 
 export default function App() {
-  // const [dark, setDark] = useState(false);
-
-  /* ── Global scroll-reveal observer ── */
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target); // fire once
-          }
-        });
-      },
-      { threshold: 0.12 }
-    );
-
-    const targets = document.querySelectorAll(".reveal");
-    targets.forEach((el) => observer.observe(el));
-
-    return () => observer.disconnect();
-  }, []);
-
   return (
     <BrowserRouter>
+      <ScrollReveal />
       <Navbar />
       <Routes>
         {/* The main landing page displaying everything */}
