@@ -19,14 +19,19 @@ const getApiBase = () => {
     const apiBase = import.meta.env.VITE_API_URL;
 
     if (apiBase) {
-        return apiBase.replace(/\/+$/, "");
+        const normalizedApiBase = apiBase.replace(/\/+$/, "");
+        if (typeof window !== "undefined" && normalizedApiBase === window.location.origin) {
+            return "";
+        }
+
+        return normalizedApiBase;
     }
 
     if (import.meta.env.DEV) {
         return "http://localhost:1337";
     }
 
-    throw new Error("Backend API URL is not configured. Set VITE_API_URL in Vercel to your deployed Strapi backend URL and redeploy.");
+    return "";
 };
 
 const readServerError = async (res) => {
@@ -74,8 +79,6 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
         // ── STEP 1: Ask YOUR Strapi to create a Razorpay order ──
         // Strapi will: calculate amount server-side, call Razorpay API,
         // save a pending order in DB, return the order_id
-        
-         console.log(BASE_URL)
         const res = await fetch(
             `${apiBase}/api/orders/create-razorpay-order`,
             {
