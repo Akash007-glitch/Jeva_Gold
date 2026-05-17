@@ -62,7 +62,7 @@ export const useCartStore = create((set, get) => ({
     getTotal: () => {
         const subtotal = get().items.reduce((sum, i) => sum + i.price * i.qty, 0);
         const shipping = 0;
-        const tax = Math.round(subtotal * 0.18);
-        return subtotal + shipping + tax;
+        // const tax = Math.round(subtotal * 0.18);
+        return subtotal + shipping;
     },
 }));

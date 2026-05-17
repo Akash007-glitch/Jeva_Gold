@@ -15,8 +15,38 @@
 // Strapi is the only place that knows RAZORPAY_KEY_SECRET.
 // ─────────────────────────────────────────────
 
+const getApiBase = () => {
+    const apiBase = import.meta.env.VITE_API_URL;
+
+    if (apiBase) {
+        return apiBase.replace(/\/+$/, "");
+    }
+
+    if (import.meta.env.DEV) {
+        return "http://localhost:1337";
+    }
+
+    throw new Error("Backend API URL is not configured. Set VITE_API_URL in Vercel to your deployed Strapi backend URL and redeploy.");
+};
+
+const readServerError = async (res) => {
+    const text = await res.text();
+
+    if (!text) {
+        return "Failed to create order on server";
+    }
+
+    try {
+        const json = JSON.parse(text);
+        return json.error?.message || json.message || text;
+    } catch {
+        return text;
+    }
+};
+
 export async function initiatePayment({ items, shippingAddress, shippingMethod, totalAmount, onSuccess, onFailure }) {
     try {
+        const apiBase = getApiBase();
         const customerName = [shippingAddress?.firstName, shippingAddress?.lastName]
             .filter(Boolean)
             .join(" ")
@@ -41,8 +71,6 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
                 quantity: Number(item?.quantity ?? item?.qty ?? 1),
             };
         });
-        const apiBase = import.meta.env.VITE_API_URL;
-
         // ── STEP 1: Ask YOUR Strapi to create a Razorpay order ──
         // Strapi will: calculate amount server-side, call Razorpay API,
         // save a pending order in DB, return the order_id
@@ -63,8 +91,7 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
         );
 
         if (!res.ok) {
-            const message = await res.text();
-            throw new Error(message || "Failed to create order on server");
+            throw new Error(await readServerError(res));
         }
 
         const orderData = await res.json();
@@ -122,6 +149,10 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
                 color: "#115637", // matches your --primary CSS variable
             },
         };
+
+        if (!window.Razorpay) {
+            throw new Error("Razorpay checkout script did not load. Please refresh and try again.");
+        }
 
         const rzp = new window.Razorpay(options);
 
