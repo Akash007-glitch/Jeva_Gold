@@ -74,6 +74,8 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
         // ── STEP 1: Ask YOUR Strapi to create a Razorpay order ──
         // Strapi will: calculate amount server-side, call Razorpay API,
         // save a pending order in DB, return the order_id
+        
+         console.log(BASE_URL)
         const res = await fetch(
             `${apiBase}/api/orders/create-razorpay-order`,
             {
@@ -86,6 +88,7 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
                     shipping_address: customerAddress,
                     items: normalizedItems,
                     total_amount: Number(totalAmount || 0),
+                    
                 }),
             }
         );
