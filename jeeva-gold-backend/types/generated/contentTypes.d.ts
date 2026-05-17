@@ -485,10 +485,20 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     customer_email: Schema.Attribute.Email & Schema.Attribute.Required;
     customer_name: Schema.Attribute.String & Schema.Attribute.Required;
     customer_phone: Schema.Attribute.String & Schema.Attribute.Required;
+    dispatch_notes: Schema.Attribute.Text;
+    dispatch_status: Schema.Attribute.Enumeration<
+      ['pending_payment', 'ready_to_dispatch', 'dispatched', 'cancelled']
+    > &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'pending_payment'>;
     items: Schema.Attribute.JSON & Schema.Attribute.Required;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
       Schema.Attribute.Private;
+    owner_notification_error: Schema.Attribute.Text;
+    owner_notification_sent_at: Schema.Attribute.DateTime;
+    owner_order_summary: Schema.Attribute.Text;
+    paid_at: Schema.Attribute.DateTime;
     payment_status: Schema.Attribute.Enumeration<
       ['pending', 'paid', 'failed']
     > &

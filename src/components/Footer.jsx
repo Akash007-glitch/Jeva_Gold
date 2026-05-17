@@ -66,12 +66,12 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="footer__bottom">
-          <p>© 2024 Jeva Gold Tea Co. All Rights Reserved.</p>
-          <div className="footer__bottom-links">
+          <p>© 2026 Jeva Gold Tea Co. All Rights Reserved.</p>
+          {/* <div className="footer__bottom-links">
             {legalLinks.map((item) => (
               <a key={item} href="#" className="footer__bottom-link">{item}</a>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
     </footer>

@@ -168,6 +168,10 @@
   transition: transform 500ms ease;
 }
 
+.product-card__img--missing {
+  background: linear-gradient(135deg, #dfeee4, #f7faf7);
+}
+
 .product-card:hover .product-card__img {
   transform: scale(1.1);
 }
@@ -228,6 +232,13 @@
   font-size: 0.875rem;
 }
 
+.product-card__btn:disabled {
+  background: #d7ded9;
+  border-color: #d7ded9;
+  color: #68756d;
+  cursor: not-allowed;
+}
+
 .product-card__btn--added {
   background: linear-gradient(135deg, #2f6f4e, #38a169);
   color: white;
@@ -267,6 +278,22 @@
 .product-card__btn--outline:hover {
   background-color: var(--color-primary);
   color: var(--color-white);
+}
+
+.products__state {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(47, 111, 78, 0.14);
+  border-radius: var(--radius-xl);
+  color: #2f6f4e;
+  font-weight: 700;
+  margin-inline: auto;
+  max-width: 34rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.products__state--error {
+  color: #7c2d12;
 }
 
 /* ── Bottom Feature Strip ── */

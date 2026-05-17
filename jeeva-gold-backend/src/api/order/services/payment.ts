@@ -1,36 +1,13 @@
 import crypto from 'crypto';
 import { z } from 'zod';
+import { defaultCatalog } from '../../../shared/default-catalog';
 
 const TAX_RATE = 0.18;
 const SHIPPING_FEE = 0;
 
-const productCatalog = {
-  '1': {
-    name: 'Jeeva Gold Elaichi',
-    price: 270,
-    defaultSize: '250g Pack of 2',
-  },
-  '2': {
-    name: 'Jeeva Gold Premium Tea',
-    price: 210,
-    defaultSize: '250g x 2 Pack',
-  },
-  '3': {
-    name: 'Jeeva Gold Masala Chai',
-    price: 549,
-    defaultSize: '250g Pack',
-  },
-  '4': {
-    name: 'Jeeva Gold Green',
-    price: 449,
-    defaultSize: '250g',
-  },
-} as const;
-
-type ProductId = keyof typeof productCatalog;
-
 export type NormalizedOrderItem = {
   product_id: string;
+  variant_id?: string;
   name: string;
   size: string;
   price: number;
@@ -64,6 +41,8 @@ const orderItemSchema = z
   .object({
     product_id: productIdSchema.optional(),
     productId: productIdSchema.optional(),
+    variant_id: productIdSchema.optional(),
+    variantId: productIdSchema.optional(),
     id: productIdSchema.optional(),
     size: z.string().trim().min(1).max(60).optional(),
     quantity: z.coerce.number().int().min(1).max(20).optional(),
@@ -134,16 +113,71 @@ const webhookPayloadSchema = z
 const formatZodError = (error: z.ZodError) =>
   error.issues.map((issue) => `${issue.path.join('.') || 'body'}: ${issue.message}`).join('; ');
 
-const getProductId = (item: z.infer<typeof orderItemSchema>) =>
-  String(item.product_id || item.productId || item.id).trim();
+const legacyStarterProductIds = new Set(['1', '2', '3', '4', '5', '6']);
 
-const assertKnownProduct = (productId: string) => {
-  const product = productCatalog[productId as ProductId];
-  if (!product) {
+const getProductId = (item: z.infer<typeof orderItemSchema>) => {
+  const productId = String(item.product_id || item.productId || String(item.id || '').split(':')[0]).trim();
+
+  if (legacyStarterProductIds.has(productId)) {
+    return `starter-${productId}`;
+  }
+
+  return productId;
+};
+
+const getVariantId = (item: z.infer<typeof orderItemSchema>) => {
+  const rawProductId = String(item.product_id || item.productId || String(item.id || '').split(':')[0]).trim();
+  if (rawProductId.startsWith('starter-') || legacyStarterProductIds.has(rawProductId)) {
+    return '';
+  }
+
+  const compositeId = String(item.id || '');
+  return String(item.variant_id || item.variantId || compositeId.split(':')[1] || '').trim();
+};
+
+type CatalogVariant = {
+  product_id: string;
+  variant_id?: string;
+  name: string;
+  size: string;
+  price: number;
+};
+
+export const defaultPaymentCatalog: CatalogVariant[] = defaultCatalog.map((item) => ({
+  product_id: item.product_id,
+  name: item.name,
+  size: item.size,
+  price: item.price,
+}));
+
+const findCatalogVariant = (catalog: CatalogVariant[], productId: string, variantId?: string, size?: string) => {
+  const productVariants = catalog.filter((entry) => entry.product_id === productId);
+
+  if (!productVariants.length) {
     throw new PaymentValidationError(`Unknown product_id: ${productId}`);
   }
 
-  return product;
+  if (variantId) {
+    const variant = productVariants.find((entry) => entry.variant_id === variantId);
+    if (!variant) {
+      throw new PaymentValidationError(`Unknown variant_id: ${variantId}`);
+    }
+
+    return variant;
+  }
+
+  if (size) {
+    const variant = productVariants.find((entry) => entry.size === size);
+    if (variant) {
+      return variant;
+    }
+  }
+
+  if (productVariants.length === 1) {
+    return productVariants[0];
+  }
+
+  throw new PaymentValidationError(`Product ${productId} requires a variant_id`);
 };
 
 export const calculateTotals = (items: NormalizedOrderItem[]) => {
@@ -159,7 +193,10 @@ export const calculateTotals = (items: NormalizedOrderItem[]) => {
   };
 };
 
-export const normalizeCreateOrderPayload = (body: unknown): NormalizedCreateOrder => {
+export const normalizeCreateOrderPayloadWithCatalog = (
+  body: unknown,
+  catalog: CatalogVariant[]
+): NormalizedCreateOrder => {
   const result = createOrderSchema.safeParse(body);
   if (!result.success) {
     throw new PaymentValidationError(formatZodError(result.error));
@@ -167,12 +204,14 @@ export const normalizeCreateOrderPayload = (body: unknown): NormalizedCreateOrde
 
   const items = result.data.items.map((item) => {
     const productId = getProductId(item);
-    const product = assertKnownProduct(productId);
+    const variantId = getVariantId(item);
+    const product = findCatalogVariant(catalog, productId, variantId, item.size);
 
     return {
       product_id: productId,
+      variant_id: product.variant_id,
       name: product.name,
-      size: item.size || product.defaultSize,
+      size: product.size,
       price: product.price,
       quantity: item.quantity || item.qty || 1,
     };
@@ -196,6 +235,9 @@ export const normalizeCreateOrderPayload = (body: unknown): NormalizedCreateOrde
     ...totals,
   };
 };
+
+export const normalizeCreateOrderPayload = (body: unknown): NormalizedCreateOrder =>
+  normalizeCreateOrderPayloadWithCatalog(body, defaultPaymentCatalog);
 
 export const validateVerifyPaymentPayload = (body: unknown) => {
   const result = verifyPaymentSchema.safeParse(body);

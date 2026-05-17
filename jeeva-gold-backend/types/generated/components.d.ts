@@ -8,11 +8,10 @@ export interface ProductVariant extends Struct.ComponentSchema {
   };
   attributes: {
     price: Schema.Attribute.Decimal & Schema.Attribute.Required;
-    size: Schema.Attribute.Enumeration<['100g', '250g', '500g']> &
-      Schema.Attribute.Required;
+    size: Schema.Attribute.String & Schema.Attribute.Required;
     stock: Schema.Attribute.Integer &
       Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<0>;
+      Schema.Attribute.DefaultTo<12>;
   };
 }
 

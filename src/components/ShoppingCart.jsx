@@ -123,10 +123,10 @@ const ShoppingCart = () => {
                       : formatINR(getShipping())}
                   </span>
                 </div>
-                <div className="sc-total-row">
+                {/* <div className="sc-total-row">
                   <span>GST (18%)</span>
                   <span>{formatINR(getTax())}</span>
-                </div>
+                </div> */}
                 <div className="sc-divider" />
                 <div className="sc-total-row sc-grand">
                   <span>Total</span>

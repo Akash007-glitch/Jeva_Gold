@@ -2,19 +2,21 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 const payment = require('../dist/src/api/order/services/payment.js');
+const ownerNotification = require('../dist/src/api/order/services/owner-notification.js');
 
-test('normalizes create-order input and calculates trusted totals', () => {
+test('normalizes frontend catalog input and calculates trusted totals', () => {
   const order = payment.normalizeCreateOrderPayload({
     customer_name: 'Test User',
     customer_email: 'test@example.com',
     customer_phone: '9876543210',
     shipping_address: '123 Test Street, Guwahati, Assam, 781001',
-    items: [{ product_id: 2, quantity: 2 }],
+    items: [{ product_id: 'starter-2', quantity: 2 }],
   });
 
   assert.deepEqual(order.items, [
     {
-      product_id: '2',
+      product_id: 'starter-2',
+      variant_id: undefined,
       name: 'Jeeva Gold Premium Tea',
       size: '250g x 2 Pack',
       price: 210,
@@ -27,6 +29,34 @@ test('normalizes create-order input and calculates trusted totals', () => {
   assert.equal(order.total_amount, 496);
 });
 
+test('maps legacy numeric starter product ids to the frontend catalog', () => {
+  const order = payment.normalizeCreateOrderPayload({
+    customer_name: 'Test User',
+    customer_email: 'test@example.com',
+    customer_phone: '9876543210',
+    shipping_address: '123 Test Street, Guwahati, Assam, 781001',
+    items: [{ product_id: 3, quantity: 1 }],
+  });
+
+  assert.equal(order.items[0].product_id, 'starter-3');
+  assert.equal(order.items[0].price, 290);
+  assert.equal(order.total_amount, 342);
+});
+
+test('ignores stale variant ids for frontend catalog products', () => {
+  const order = payment.normalizeCreateOrderPayload({
+    customer_name: 'Test User',
+    customer_email: 'test@example.com',
+    customer_phone: '9876543210',
+    shipping_address: '123 Test Street, Guwahati, Assam, 781001',
+    items: [{ product_id: 2, variant_id: 7, quantity: 1 }],
+  });
+
+  assert.equal(order.items[0].product_id, 'starter-2');
+  assert.equal(order.items[0].variant_id, undefined);
+  assert.equal(order.total_amount, 248);
+});
+
 test('rejects tampered create-order totals', () => {
   assert.throws(
     () =>
@@ -35,7 +65,7 @@ test('rejects tampered create-order totals', () => {
         customer_email: 'test@example.com',
         customer_phone: '9876543210',
         shipping_address: '123 Test Street, Guwahati, Assam, 781001',
-        items: [{ product_id: 2, quantity: 1 }],
+        items: [{ product_id: 'starter-2', quantity: 1 }],
         total_amount: 1,
       }),
     /Order total mismatch/
@@ -63,6 +93,38 @@ test('validates Razorpay payment signatures', () => {
 
   assert.equal(payment.isValidSignature(body, signature, secret), true);
   assert.equal(payment.isValidSignature(body, 'bad_signature', secret), false);
+});
+
+test('builds a dispatch-ready owner order summary', () => {
+  const summary = ownerNotification.buildOwnerOrderSummary({
+    id: 42,
+    payment_status: 'paid',
+    dispatch_status: 'ready_to_dispatch',
+    customer_name: 'Test User',
+    customer_email: 'test@example.com',
+    customer_phone: '9876543210',
+    shipping_address: '123 Test Street, Guwahati, Assam, 781001',
+    items: [
+      {
+        name: 'Jeeva Gold Premium Tea',
+        size: '250g x 2 Pack',
+        price: 210,
+        quantity: 2,
+      },
+    ],
+    subtotal_amount: 420,
+    tax_amount: 76,
+    shipping_amount: 0,
+    total_amount: 496,
+    razorpay_order_id: 'order_123',
+    razorpay_payment_id: 'pay_123',
+  });
+
+  assert.match(summary, /Order #42/);
+  assert.match(summary, /ready_to_dispatch/);
+  assert.match(summary, /Test User/);
+  assert.match(summary, /Jeeva Gold Premium Tea/);
+  assert.match(summary, /Total: Rs 496/);
 });
 
 test('extracts paid updates from Razorpay webhook payloads', () => {

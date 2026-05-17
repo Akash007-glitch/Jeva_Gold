@@ -6,12 +6,7 @@
     },
     "attributes": {
         "size": {
-            "type": "enumeration",
-            "enum": [
-                "100g",
-                "250g",
-                "500g"
-            ],
+            "type": "string",
             "required": true
         },
         "price": {
@@ -21,7 +16,7 @@
         "stock": {
             "type": "integer",
             "required": true,
-            "default": 0
+            "default": 12
         }
     }
 }

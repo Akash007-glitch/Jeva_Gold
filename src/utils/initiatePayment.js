@@ -33,7 +33,8 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
             const packTag = item?.tags?.find((tag) => /pack|g\b/i.test(tag));
 
             return {
-                product_id: item?.productId ?? item?.id ?? item?.product?.id,
+                product_id: item?.productId ?? item?.product?.id ?? item?.id,
+                variant_id: item?.variantId ?? item?.variant_id,
                 name: item?.name,
                 price: Number(item?.price ?? 0),
                 size: item?.size || item?.weight || packTag || "Standard Pack",

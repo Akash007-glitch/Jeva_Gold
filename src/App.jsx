@@ -15,6 +15,48 @@ import ShoppingCart from './components/ShoppingCart'
 import CheckoutPage from './components/CheckoutPage'
 import OrderSuccess from "./components/OrderSuccess";
 
+function ScrollToTopOnRoute() {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
+  }, [pathname, hash]);
+
+  return null;
+}
+
+function ScrollToTopButton() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 420);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const handleClick = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  };
+
+  return (
+    <button
+      type="button"
+      className={`scroll-top-btn${visible ? " scroll-top-btn--visible" : ""}`}
+      onClick={handleClick}
+      aria-label="Scroll to top"
+      title="Scroll to top"
+    >
+      <span className="material-symbols-outlined" aria-hidden="true">
+        keyboard_arrow_up
+      </span>
+    </button>
+  );
+}
+
 // Scroll-reveal observer — lives inside the router so it can watch location
 function ScrollReveal() {
   const location = useLocation();
@@ -52,6 +94,7 @@ function ScrollReveal() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTopOnRoute />
       <ScrollReveal />
       <Navbar />
       <Routes>
@@ -83,6 +126,7 @@ export default function App() {
       {/* <Testimonials /> */}
       
       <Footer />
+      <ScrollToTopButton />
     </BrowserRouter>
   );
 }

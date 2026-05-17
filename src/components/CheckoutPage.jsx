@@ -236,10 +236,10 @@ const CheckoutPage = () => {
                   <span>Shipping</span>
                   <span>{getShipping() === 0 ? "Free" : formatINR(getShipping())}</span>
                 </div>
-                <div className="co-total-row">
+                {/* <div className="co-total-row">
                   <span>GST (18%)</span>
                   <span>{formatINR(getTax())}</span>
-                </div>
+                </div> */}
                 <div className="co-total-row co-grand-total">
                   <span>Total</span>
                   <span>{formatINR(getTotal())}</span>

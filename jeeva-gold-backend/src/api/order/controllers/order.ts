@@ -8,6 +8,10 @@ import {
   normalizeCreateOrderPayload,
   validateVerifyPaymentPayload,
 } from '../services/payment';
+import {
+  buildOwnerOrderSummary,
+  notifyOwnerForPaidOrder,
+} from '../services/owner-notification';
 
 const getRazorpay = () => {
   const key_id = process.env.RAZORPAY_KEY_ID;
@@ -27,6 +31,44 @@ const handleControllerError = (ctx: any, error: any, fallbackMessage: string) =>
 
   console.error(fallbackMessage, error);
   return ctx.internalServerError(error?.message || fallbackMessage);
+};
+
+const markOrderPaidAndNotifyOwner = async (strapi: any, order: any, razorpay_payment_id?: string) => {
+  if (order.payment_status === 'paid' && order.owner_order_summary) {
+    return order;
+  }
+
+  const paidOrderData: Record<string, any> = {
+    payment_status: 'paid',
+    dispatch_status: 'ready_to_dispatch',
+    paid_at: new Date(),
+  };
+
+  if (razorpay_payment_id) {
+    paidOrderData.razorpay_payment_id = razorpay_payment_id;
+  }
+
+  let paidOrder = await strapi.db.query('api::order.order').update({
+    where: { id: order.id },
+    data: paidOrderData,
+  });
+
+  const summary = buildOwnerOrderSummary(paidOrder);
+  const notification = await notifyOwnerForPaidOrder(strapi, {
+    ...paidOrder,
+    owner_order_summary: summary,
+  });
+
+  paidOrder = await strapi.db.query('api::order.order').update({
+    where: { id: paidOrder.id },
+    data: {
+      owner_order_summary: summary,
+      owner_notification_sent_at: notification.sent ? new Date() : null,
+      owner_notification_error: notification.error,
+    },
+  });
+
+  return paidOrder;
 };
 
 export default factories.createCoreController('api::order.order', ({ strapi }) => ({
@@ -54,6 +96,15 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
           total_amount: orderInput.total_amount,
           razorpay_order_id: razorpayOrder.id,
           payment_status: 'pending',
+          dispatch_status: 'pending_payment',
+        },
+      });
+
+      const owner_order_summary = buildOwnerOrderSummary(order);
+      await strapi.db.query('api::order.order').update({
+        where: { id: order.id },
+        data: {
+          owner_order_summary,
         },
       });
 
@@ -96,17 +147,24 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
       const signatureBody = `${payment.razorpay_order_id}|${payment.razorpay_payment_id}`;
       const isValid = isValidSignature(signatureBody, payment.razorpay_signature, key_secret);
 
-      const updatedOrder = await strapi.db.query('api::order.order').update({
-        where: { id: order.id },
-        data: {
-          payment_status: isValid ? 'paid' : 'failed',
-          razorpay_payment_id: payment.razorpay_payment_id,
-        },
-      });
-
       if (!isValid) {
+        await strapi.db.query('api::order.order').update({
+          where: { id: order.id },
+          data: {
+            payment_status: 'failed',
+            razorpay_payment_id: payment.razorpay_payment_id,
+            dispatch_status: 'cancelled',
+          },
+        });
+
         return ctx.badRequest('Payment signature verification failed');
       }
+
+      const updatedOrder = await markOrderPaidAndNotifyOwner(
+        strapi,
+        order,
+        payment.razorpay_payment_id
+      );
 
       return ctx.send({
         success: true,
@@ -160,18 +218,17 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         return ctx.send({ success: true, ignored: true, payment_status: 'paid' });
       }
 
-      const data: Record<string, string> = {
-        payment_status: update.payment_status,
-      };
-
-      if (update.razorpay_payment_id) {
-        data.razorpay_payment_id = update.razorpay_payment_id;
-      }
-
-      const updatedOrder = await strapi.db.query('api::order.order').update({
-        where: { id: order.id },
-        data,
-      });
+      const updatedOrder =
+        update.payment_status === 'paid'
+          ? await markOrderPaidAndNotifyOwner(strapi, order, update.razorpay_payment_id)
+          : await strapi.db.query('api::order.order').update({
+              where: { id: order.id },
+              data: {
+                payment_status: 'failed',
+                razorpay_payment_id: update.razorpay_payment_id,
+                dispatch_status: 'cancelled',
+              },
+            });
 
       return ctx.send({
         success: true,

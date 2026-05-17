@@ -62,6 +62,32 @@
             ],
             "default": "pending",
             "required": true
+        },
+        "dispatch_status": {
+            "type": "enumeration",
+            "enum": [
+                "pending_payment",
+                "ready_to_dispatch",
+                "dispatched",
+                "cancelled"
+            ],
+            "default": "pending_payment",
+            "required": true
+        },
+        "owner_order_summary": {
+            "type": "text"
+        },
+        "owner_notification_sent_at": {
+            "type": "datetime"
+        },
+        "owner_notification_error": {
+            "type": "text"
+        },
+        "paid_at": {
+            "type": "datetime"
+        },
+        "dispatch_notes": {
+            "type": "text"
         }
     }
 }

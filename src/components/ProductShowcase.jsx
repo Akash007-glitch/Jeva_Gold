@@ -1,80 +1,78 @@
 import { useState } from 'react';
 import './ProductShowcase.css';
 import { useCartStore } from '../store/CartStore1';
-import product1Img from '../../image/product1.png';
 import product2Img from '../../image/product2.jpeg';
-import Product3Img from '../../image/Elaichi.jpg'
-import Product4Img from '../../image/GreenTea.jpg'
-import Product5Img from '../../image/MasalaChai.jpg'
-import RoyalTeaImg from '../../image/product6.png'
-
+import Product3Img from '../../image/Elaichi.jpg';
+import Product4Img from '../../image/GreenTea.jpg';
+import Product5Img from '../../image/MasalaChai.jpg';
+import RoyalTeaImg from '../../image/product6.png';
 
 const products = [
   {
-    id: 1,
-    name: "Jeeva Gold Elaichi",
+    id: 'starter-1',
+    productId: 'starter-1',
+    name: 'Jeeva Gold Elaichi',
     price: 270,
-    quantity: "250g × 2 Pack",
-    description: "Jeeva Gold Elaichi Tea brings rich strength & soothing aroma of cardamon — a perfect tea experience.",
+    quantity: '250g x 2 Pack',
+    description: 'Jeeva Gold Elaichi Tea brings rich strength and soothing aroma of cardamom for a perfect tea experience.',
     image: Product3Img,
-    tags: ["Elaichi", "250g Pack of 2"],
+    tags: ['Elaichi', '250g Pack of 2'],
     featured: false,
-    showPack: true,
   },
   {
-    id: 2,
-    name: "Jeeva Gold Premium Tea",
+    id: 'starter-2',
+    productId: 'starter-2',
+    name: 'Jeeva Gold Premium Tea',
     price: 210,
-    quantity: "250g × 2 Pack",
-    description: "Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.",
+    quantity: '250g x 2 Pack',
+    description: 'Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.',
     image: product2Img,
-    tags: ["250g x 2 Pack", "Premium Assam"],
+    tags: ['250g x 2 Pack', 'Premium Assam'],
     featured: true,
-    showPack: true,
   },
   {
-    id: 3,
-    name: "Jeeva Gold Masala Chai",
+    id: 'starter-3',
+    productId: 'starter-3',
+    name: 'Jeeva Gold Masala Chai',
     price: 290,
-    quantity: "250g x 2 Pack",
-    description: "Jeeva Gold Masala Chai is a rich fusion of premium tea and aromatic spices , crafted for a strong and flavorful cup that warms your senses & provides a refreshing Masala Chai experience.",
+    quantity: '250g x 2 Pack',
+    description: 'Jeeva Gold Masala Chai is a rich fusion of premium tea and aromatic spices, crafted for a strong and flavorful cup.',
     image: Product5Img,
-    tags: ["250g x 2 Pack", "Masala"],
+    tags: ['250g x 2 Pack', 'Masala'],
     featured: false,
-    showPack: true,
   },
   {
-    id: 4,
-    name: "Jeeva Gold Green",
+    id: 'starter-4',
+    productId: 'starter-4',
+    name: 'Jeeva Gold Green',
     price: 280,
-    quantity: "250g × 2 Pack",
-    description: "Jeeva Gold Wellness Green Tea delivers a crisp burst of antioxidants and revitalizing freshness - The ultimate reset for your body and mind.",
+    quantity: '250g x 2 Pack',
+    description: 'Jeeva Gold Wellness Green Tea delivers a crisp burst of antioxidants and revitalizing freshness.',
     image: Product4Img,
-    tags: ["Green Tea", "Wellness"],
+    tags: ['Green Tea', 'Wellness'],
     featured: false,
-    showPack: true,
   },
   {
-    id: 5,
-    name: "Jeeva Gold Premium Tea",
+    id: 'starter-5',
+    productId: 'starter-5',
+    name: 'Jeeva Gold Premium Tea',
     price: 410,
-    quantity: "1 KG Pack",
-    description: "Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.",
+    quantity: '1 KG Pack',
+    description: 'Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.',
     image: product2Img,
-    tags: ["1KG", "Premium Assam"],
+    tags: ['1KG', 'Premium Assam'],
     featured: false,
-    showPack: true,
   },
   {
-    id: 6,
-    name: "Jeeva Gold Royal Tea",
+    id: 'starter-6',
+    productId: 'starter-6',
+    name: 'Jeeva Gold Royal Tea',
     price: 520,
-    quantity: "1 KG Pack",
-    description: "Jeeva Gold Royal Tea brings a sophisticated and elegant tea experience with its premium blend and rich aroma.",
+    quantity: '1 KG Pack',
+    description: 'Jeeva Gold Royal Tea brings a sophisticated and elegant tea experience with its premium blend and rich aroma.',
     image: RoyalTeaImg,
-    tags: ["1KG", "Premium Assam"],
+    tags: ['1KG', 'Premium Assam'],
     featured: false,
-    showPack: false,
   },
 ];
 
@@ -85,28 +83,23 @@ function ProductCard({ product, delay }) {
   const handleAddToCart = () => {
     addItem({
       id: product.id,
+      productId: product.productId,
+      size: product.quantity,
       name: product.name,
       price: product.price,
-      img: product.image,       // ShoppingCart expects 'img'
+      img: product.image,
       alt: product.name,
       description: product.description,
       tags: product.tags || [],
     });
 
-    // Show brief "Added!" feedback
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };
 
   return (
-    <div className={`product-card reveal reveal--delay-${delay}${product.featured ? " product-card--featured" : ""}`}>
+    <div className={`product-card reveal is-visible reveal--delay-${delay}${product.featured ? ' product-card--featured' : ''}`}>
       <div className="product-card__image-wrap">
-        {/* {product.showPack && (
-          <span className="product-card__pack-badge">
-            <span className="product-card__pack-icon">📦</span>
-            2 PACK
-          </span>
-        )} */}
         {product.featured && (
           <span className="product-card__badge">Best Seller</span>
         )}
@@ -114,7 +107,7 @@ function ProductCard({ product, delay }) {
       </div>
       <div className="product-card__meta">
         <h3 className="product-card__name">{product.name}</h3>
-        <span className="product-card__price">₹{product.price}</span>
+        <span className="product-card__price">Rs {product.price.toLocaleString('en-IN')}</span>
       </div>
       {product.quantity && (
         <div className="product-card__qty">
@@ -125,14 +118,14 @@ function ProductCard({ product, delay }) {
       <p className="product-card__desc">{product.description}</p>
       <button
         className={`product-card__btn ${added
-          ? "product-card__btn--added"
+          ? 'product-card__btn--added'
           : product.featured
-            ? "product-card__btn--primary"
-            : "product-card__btn--outline"
+            ? 'product-card__btn--primary'
+            : 'product-card__btn--outline'
           }`}
         onClick={handleAddToCart}
       >
-        {added ? "✓ Added to Cart" : "🛒 Add to Cart"}
+        {added ? 'Added to Cart' : 'Add to Cart'}
       </button>
     </div>
   );
@@ -142,30 +135,26 @@ export default function ProductShowcase() {
   return (
     <section className="products section-py" id="collection">
       <div className="container">
-
-        {/* ── Revamped Header ── */}
         <div className="products__header reveal">
           <div className="products__title-row">
-            <span className="products__leaf products__leaf--left">🌿</span>
+            <span className="products__leaf products__leaf--left"></span>
             <h2 className="products__title">Our Premium Selection</h2>
-            <span className="products__leaf products__leaf--right">🌿</span>
+            <span className="products__leaf products__leaf--right"></span>
           </div>
           <p className="products__subtitle">
             Handpicked variety of the finest teas from the world's largest tea-growing region.
           </p>
         </div>
 
-        {/* ── Product Grid ── */}
         <div className="products__grid">
           {products.map((product, i) => (
             <ProductCard key={product.id} product={product} delay={i + 1} />
           ))}
         </div>
 
-        {/* ── Bottom Feature Strip ── */}
         <div className="products__features reveal">
           <div className="products__feature">
-            <span className="products__feature-icon">🌿</span>
+            <span className="products__feature-icon"></span>
             <div>
               <p className="products__feature-title">Premium Quality</p>
               <p className="products__feature-sub">Carefully selected leaves</p>
@@ -173,7 +162,7 @@ export default function ProductShowcase() {
           </div>
           <div className="products__feature-divider" />
           <div className="products__feature">
-            <span className="products__feature-icon">🌿</span>
+            <span className="products__feature-icon"></span>
             <div>
               <p className="products__feature-title">Natural &amp; Pure</p>
               <p className="products__feature-sub">100% natural ingredients</p>
@@ -181,14 +170,13 @@ export default function ProductShowcase() {
           </div>
           <div className="products__feature-divider" />
           <div className="products__feature">
-            <span className="products__feature-icon">🌿</span>
+            <span className="products__feature-icon"></span>
             <div>
               <p className="products__feature-title">Fresh &amp; Flavorful</p>
               <p className="products__feature-sub">Rich taste in every sip</p>
             </div>
           </div>
         </div>
-
       </div>
     </section>
   );

@@ -42,9 +42,9 @@
   - URL: `https://your-backend-domain.com/api/orders/razorpay-webhook`
   - Events: at minimum `payment.captured`, `payment.failed`, and `order.paid`.
 
-- [ ] Move the storefront product catalog fully into Strapi.
-  - Current backend uses a trusted server-side catalog matching the hardcoded frontend products.
-  - Best production path: render frontend products from Strapi so pricing has one source of truth.
+- [x] Keep the storefront product catalog frontend-only.
+  - Frontend renders all six products locally.
+  - Checkout totals are validated against the matching trusted backend catalog.
 
 - [ ] Use shared rate-limit storage if deploying multiple backend instances.
   - Current middleware protects a single Node process.
