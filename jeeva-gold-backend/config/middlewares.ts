@@ -9,6 +9,7 @@ const config: Core.Config.Middlewares = [
     config: {
       // Add your production frontend URL here when deploying
       origin: [
+        'https://jeva-gold-u63j.vercel.app',
         'http://localhost:5173',  // Vite dev server
         'http://localhost:3000',  // alternate dev port
         process.env.FRONTEND_URL || '',
