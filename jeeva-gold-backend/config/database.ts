@@ -4,7 +4,16 @@ import type { Core } from '@strapi/strapi';
 const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database => {
   const defaultClient = env('NODE_ENV') === 'production' ? 'postgres' : 'sqlite';
   const client = env('DATABASE_CLIENT', defaultClient);
-  const databaseUrl = env('DATABASE_URL');
+  const isProduction = env('NODE_ENV') === 'production';
+  const databaseUrl = env('DATABASE_URL', env('DATABASE_PRIVATE_URL'));
+  const databaseHost = env('DATABASE_HOST', env('PGHOST'));
+
+  if (isProduction && client === 'postgres' && !databaseUrl && !databaseHost) {
+    throw new Error(
+      'Production Postgres is enabled, but no database connection was configured. Set DATABASE_URL to your Railway Postgres connection string, or set DATABASE_HOST/DATABASE_PORT/DATABASE_NAME/DATABASE_USERNAME/DATABASE_PASSWORD.'
+    );
+  }
+
   const postgresConnection = databaseUrl
     ? {
         connectionString: databaseUrl,
@@ -19,7 +28,7 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database 
         schema: env('DATABASE_SCHEMA', 'public'),
       }
     : {
-        host: env('DATABASE_HOST', env('PGHOST', 'localhost')),
+        host: databaseHost,
         port: env.int('DATABASE_PORT', env.int('PGPORT', 5432)),
         database: env('DATABASE_NAME', env('PGDATABASE', 'strapi')),
         user: env('DATABASE_USERNAME', env('PGUSER', 'strapi')),
