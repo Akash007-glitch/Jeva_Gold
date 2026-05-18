@@ -15,6 +15,22 @@ import ShoppingCart from './components/ShoppingCart'
 import CheckoutPage from './components/CheckoutPage'
 import OrderSuccess from "./components/OrderSuccess";
 
+function LoadingScreen({ visible }) {
+  return (
+    <div
+      className={`site-loader${visible ? "" : " site-loader--hidden"}`}
+      role="status"
+      aria-live="polite"
+      aria-label="Loading Jeeva Gold"
+    >
+      <div className="site-loader__mark" aria-hidden="true">
+        <span className="site-loader__leaf" />
+      </div>
+      <p className="site-loader__brand">Jeeva Gold</p>
+    </div>
+  );
+}
+
 function ScrollToTopOnRoute() {
   const { pathname, hash } = useLocation();
 
@@ -92,8 +108,43 @@ function ScrollReveal() {
 }
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let loadComplete = document.readyState === "complete";
+    let delayComplete = false;
+
+    const hideWhenReady = () => {
+      if (loadComplete && delayComplete) {
+        setIsLoading(false);
+      }
+    };
+
+    const handleLoad = () => {
+      loadComplete = true;
+      hideWhenReady();
+    };
+
+    const minimumDelay = window.setTimeout(() => {
+      delayComplete = true;
+      hideWhenReady();
+    }, 900);
+
+    if (loadComplete) {
+      hideWhenReady();
+    } else {
+      window.addEventListener("load", handleLoad, { once: true });
+    }
+
+    return () => {
+      window.clearTimeout(minimumDelay);
+      window.removeEventListener("load", handleLoad);
+    };
+  }, []);
+
   return (
     <BrowserRouter>
+      <LoadingScreen visible={isLoading} />
       <ScrollToTopOnRoute />
       <ScrollReveal />
       <Navbar />
