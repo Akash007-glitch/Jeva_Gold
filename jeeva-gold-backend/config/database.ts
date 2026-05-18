@@ -5,10 +5,11 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database 
   const defaultClient = env('NODE_ENV') === 'production' ? 'postgres' : 'sqlite';
   const client = env('DATABASE_CLIENT', defaultClient);
   const isProduction = env('NODE_ENV') === 'production';
+  const isBuild = process.argv.includes('build');
   const databaseUrl = env('DATABASE_URL', env('DATABASE_PRIVATE_URL'));
   const databaseHost = env('DATABASE_HOST', env('PGHOST'));
 
-  if (isProduction && client === 'postgres' && !databaseUrl && !databaseHost) {
+  if (isProduction && !isBuild && client === 'postgres' && !databaseUrl && !databaseHost) {
     throw new Error(
       'Production Postgres is enabled, but no database connection was configured. Set DATABASE_URL to your Railway Postgres connection string, or set DATABASE_HOST/DATABASE_PORT/DATABASE_NAME/DATABASE_USERNAME/DATABASE_PASSWORD.'
     );
