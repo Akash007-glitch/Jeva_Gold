@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from '../../image/logo.png';
+import logo from '../../../image/logo.png';
 import './Footer.css';
 
 const shopLinks = ["Black Tea", "Gift Sets", "Tea Accessories", "Subscriptions"];

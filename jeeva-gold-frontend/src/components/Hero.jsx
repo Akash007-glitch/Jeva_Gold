@@ -1,5 +1,5 @@
 import './Hero.css';
-import Bgimage from '../../image/Bg.jpg'
+import Bgimage from '../../../image/Bg.jpg'
 
 export default function Hero() {
   return (

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import './ProductShowcase.css';
 import { useCartStore } from '../store/CartStore1';
-import product2Img from '../../image/product2.jpeg';
-import Product3Img from '../../image/Elaichi.jpg';
-import Product4Img from '../../image/GreenTea.jpg';
-import Product5Img from '../../image/MasalaChai.jpg';
-import RoyalTeaImg from '../../image/product6.png';
+import product2Img from '../../../image/product2.jpeg';
+import Product3Img from '../../../image/Elaichi.jpg';
+import Product4Img from '../../../image/GreenTea.jpg';
+import Product5Img from '../../../image/MasalaChai.jpg';
+import RoyalTeaImg from '../../../image/product6.png';
 
 const products = [
   {
