@@ -6,6 +6,7 @@ import Product3Img from '../../../image/Elaichi.jpg';
 import Product4Img from '../../../image/GreenTea.jpg';
 import Product5Img from '../../../image/MasalaChai.jpg';
 import RoyalTeaImg from '../../../image/product6.png';
+import premiumTeaImg from '../../../image/pre.png';
 
 const products = [
   {
@@ -59,7 +60,7 @@ const products = [
     price: 410,
     quantity: '1 KG Pack',
     description: 'Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.',
-    image: product2Img,
+    image: premiumTeaImg,
     tags: ['1KG', 'Premium Assam'],
     featured: false,
   },

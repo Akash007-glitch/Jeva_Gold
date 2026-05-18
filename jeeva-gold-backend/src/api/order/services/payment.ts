@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import { z } from 'zod';
 import { defaultCatalog } from '../../../shared/default-catalog';
 
-const TAX_RATE = 0.18;
+const TAX_RATE = 0;
 const SHIPPING_FEE = 0;
 
 export type NormalizedOrderItem = {

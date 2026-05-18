@@ -29,7 +29,7 @@ export const buildOwnerOrderSummary = (order: any) => {
     '',
     'Totals',
     `Subtotal: ${formatINR(order.subtotal_amount)}`,
-    `GST: ${formatINR(order.tax_amount)}`,
+    // `GST: ${formatINR(order.tax_amount)}`,
     `Shipping: ${Number(order.shipping_amount || 0) === 0 ? 'Free' : formatINR(order.shipping_amount)}`,
     `Total: ${formatINR(order.total_amount)}`,
     '',

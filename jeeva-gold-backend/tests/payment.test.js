@@ -24,9 +24,9 @@ test('normalizes frontend catalog input and calculates trusted totals', () => {
     },
   ]);
   assert.equal(order.subtotal_amount, 420);
-  assert.equal(order.tax_amount, 76);
+  assert.equal(order.tax_amount, 0);
   assert.equal(order.shipping_amount, 0);
-  assert.equal(order.total_amount, 496);
+  assert.equal(order.total_amount, 420);
 });
 
 test('maps legacy numeric starter product ids to the frontend catalog', () => {
@@ -40,7 +40,7 @@ test('maps legacy numeric starter product ids to the frontend catalog', () => {
 
   assert.equal(order.items[0].product_id, 'starter-3');
   assert.equal(order.items[0].price, 290);
-  assert.equal(order.total_amount, 342);
+  assert.equal(order.total_amount, 290);
 });
 
 test('ignores stale variant ids for frontend catalog products', () => {
@@ -54,7 +54,7 @@ test('ignores stale variant ids for frontend catalog products', () => {
 
   assert.equal(order.items[0].product_id, 'starter-2');
   assert.equal(order.items[0].variant_id, undefined);
-  assert.equal(order.total_amount, 248);
+  assert.equal(order.total_amount, 210);
 });
 
 test('rejects tampered create-order totals', () => {
@@ -113,9 +113,9 @@ test('builds a dispatch-ready owner order summary', () => {
       },
     ],
     subtotal_amount: 420,
-    tax_amount: 76,
+    tax_amount: 0,
     shipping_amount: 0,
-    total_amount: 496,
+    total_amount: 420,
     razorpay_order_id: 'order_123',
     razorpay_payment_id: 'pay_123',
   });
@@ -124,7 +124,7 @@ test('builds a dispatch-ready owner order summary', () => {
   assert.match(summary, /ready_to_dispatch/);
   assert.match(summary, /Test User/);
   assert.match(summary, /Jeeva Gold Premium Tea/);
-  assert.match(summary, /Total: Rs 496/);
+  assert.match(summary, /Total: Rs 420/);
 });
 
 test('extracts paid updates from Razorpay webhook payloads', () => {
