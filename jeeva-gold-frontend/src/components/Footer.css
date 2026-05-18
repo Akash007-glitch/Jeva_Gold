@@ -74,6 +74,25 @@
 }
 .footer__contact-link:hover { color: var(--color-primary); }
 
+.footer__follow { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.footer__instagram-link {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--color-slate-600);
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: var(--transition-colors);
+}
+
+.footer__instagram-link:hover { color: var(--color-primary); }
+
+.footer__instagram-link .material-symbols-outlined { font-size: 1.25rem; }
+
+.footer__instagram-launch { color: var(--color-slate-400); }
+
 .footer__newsletter { display: flex; flex-direction: column; gap: 1.5rem; }
 
 .footer__newsletter-text { font-size: 0.875rem; color: var(--color-slate-500); }

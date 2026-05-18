@@ -47,10 +47,10 @@ const products = [
     productId: 'starter-4',
     name: 'Jeeva Gold Green',
     price: 280,
-    quantity: '250g x 2 Pack',
+    quantity: '100g x 2 Pack',
     description: 'Jeeva Gold Wellness Green Tea delivers a crisp burst of antioxidants and revitalizing freshness.',
     image: Product4Img,
-    tags: ['Green Tea', 'Wellness'],
+    tags: ['100g x 2 Pack', 'Green Tea'],
     featured: false,
   },
   {

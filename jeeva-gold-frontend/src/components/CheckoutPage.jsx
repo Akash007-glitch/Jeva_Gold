@@ -249,7 +249,6 @@ const CheckoutPage = () => {
               <div className="co-kit-note">
                 <div className="co-kit-heading">
                   <span className="material-symbols-outlined">local_shipping</span>
-                  <p>Complimentary Monsoonal Kit Included</p>
                 </div>
                 <p className="co-kit-desc">
                   Shipped in signature biodegradable packaging, infused with the scent of fresh Assam leaves.

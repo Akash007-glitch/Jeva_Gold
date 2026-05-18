@@ -26,11 +26,11 @@ export default function Hero() {
             crafted for a rich malty aroma and perfect golden infusion.
           </p>
 
-          <div className="hero__actions">
+          {/* <div className="hero__actions">
             <button className="hero__btn-secondary">
               Explore Our Tea
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>
