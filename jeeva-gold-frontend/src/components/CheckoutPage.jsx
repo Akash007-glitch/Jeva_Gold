@@ -101,15 +101,15 @@ const CheckoutPage = () => {
               <div className="co-form-grid">
                 <div className="co-field">
                   <label>First Name *</label>
-                  <input name="firstName" type="text" placeholder="Julian" value={form.firstName} onChange={handleChange} />
+                  <input name="firstName" type="text" placeholder="first name" value={form.firstName} onChange={handleChange} />
                 </div>
                 <div className="co-field">
                   <label>Last Name</label>
-                  <input name="lastName" type="text" placeholder="Vance" value={form.lastName} onChange={handleChange} />
+                  <input name="lastName" type="text" placeholder="Last name" value={form.lastName} onChange={handleChange} />
                 </div>
                 <div className="co-field">
                   <label>Email *</label>
-                  <input name="email" type="email" placeholder="julian@example.com" value={form.email} onChange={handleChange} />
+                  <input name="email" type="email" placeholder="" value={form.email} onChange={handleChange} />
                 </div>
                 <div className="co-field">
                   <label>Phone *</label>

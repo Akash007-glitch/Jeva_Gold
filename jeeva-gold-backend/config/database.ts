@@ -3,15 +3,27 @@ import type { Core } from '@strapi/strapi';
 
 const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database => {
   const defaultClient = env('NODE_ENV') === 'production' ? 'postgres' : 'sqlite';
-  const client = env('DATABASE_CLIENT', defaultClient);
+  const requestedClient = env('DATABASE_CLIENT', defaultClient).toLowerCase();
+  const clientAliases = {
+    pg: 'postgres',
+    postgresql: 'postgres',
+    sqlite3: 'sqlite',
+  };
+  const client = clientAliases[requestedClient] ?? requestedClient;
   const isProduction = env('NODE_ENV') === 'production';
   const isBuild = process.argv.includes('build');
-  const databaseUrl = env('DATABASE_URL', env('DATABASE_PRIVATE_URL'));
-  const databaseHost = env('DATABASE_HOST', env('PGHOST'));
+  const databaseUrl =
+    env('DATABASE_URL') ||
+    env('DATABASE_PRIVATE_URL') ||
+    env('DATABASE_PUBLIC_URL') ||
+    env('POSTGRES_URL') ||
+    env('POSTGRES_PRIVATE_URL') ||
+    env('POSTGRES_PUBLIC_URL');
+  const databaseHost = env('DATABASE_HOST') || env('PGHOST') || env('POSTGRES_HOST');
 
   if (isProduction && !isBuild && client === 'postgres' && !databaseUrl && !databaseHost) {
     throw new Error(
-      'Production Postgres is enabled, but no database connection was configured. Set DATABASE_URL to your Railway Postgres connection string, or set DATABASE_HOST/DATABASE_PORT/DATABASE_NAME/DATABASE_USERNAME/DATABASE_PASSWORD.'
+      'Production Postgres is enabled, but no database connection was configured. In Railway, add DATABASE_URL=${{Postgres.DATABASE_URL}} to the Jeeva_Gold service variables, or set DATABASE_HOST/DATABASE_PORT/DATABASE_NAME/DATABASE_USERNAME/DATABASE_PASSWORD.'
     );
   }
 
@@ -75,6 +87,12 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database 
       useNullAsDefault: true,
     },
   };
+
+  if (!connections[client]) {
+    throw new Error(
+      `Unsupported DATABASE_CLIENT "${requestedClient}". Use one of: postgres, sqlite, mysql.`
+    );
+  }
 
   return {
     connection: {
