@@ -5,7 +5,7 @@ export default defineConfig({
   root: 'jeeva-gold-frontend',
   plugins: [react()],
   build: {
-    outDir: '../dist',
+    outDir: 'dist',
     emptyOutDir: true,
   },
 })
