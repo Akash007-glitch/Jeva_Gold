@@ -80,7 +80,7 @@
 /* --- Main --- */
 .co-main {
   padding: 8rem 1.5rem 6rem;
-  max-width: 1152px;
+  max-width: 80rem;
   margin: 0 auto;
 }
 
@@ -94,6 +94,9 @@
 @media (min-width: 1024px) {
   .co-grid {
     grid-template-columns: 7fr 5fr;
+  }
+  .co-left {
+    max-width: 680px;
   }
 }
 
@@ -494,7 +497,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 3rem;
-  max-width: 1152px;
+  max-width: 80rem;
   margin: 0 auto;
 }
 
@@ -585,7 +588,7 @@
   margin-top: 5rem;
   padding-top: 2rem;
   text-align: center;
-  max-width: 1152px;
+  max-width: 80rem;
   margin-left: auto;
   margin-right: auto;
 }
@@ -593,4 +596,42 @@
 .co-footer-bottom p {
   font-size: 0.75rem;
   color: rgba(232, 245, 238, 0.4);
+}
+
+/* --- Responsiveness & Mobile Enhancements --- */
+@media (max-width: 1023px) {
+  .co-grid {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 2.5rem;
+  }
+  .co-aside {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .co-main {
+    padding: 6.5rem 1rem 4rem;
+  }
+  .co-left {
+    gap: 3rem;
+  }
+  .co-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .co-summary-card {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .co-field-pair {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 }

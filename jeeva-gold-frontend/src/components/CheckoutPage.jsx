@@ -77,7 +77,11 @@ const CheckoutPage = () => {
 
       onFailure: (message) => {
         setIsProcessing(false);
-        setError(message);
+        if (message !== "Payment cancelled") {
+          setError(message);
+        } else {
+          setError(null);
+        }
       },
     });
   };

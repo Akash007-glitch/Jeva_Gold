@@ -154,6 +154,11 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
             theme: {
                 color: "#115637", // matches your --primary CSS variable
             },
+            modal: {
+                ondismiss: function () {
+                    onFailure("Payment cancelled");
+                }
+            },
         };
 
         if (!window.Razorpay) {
