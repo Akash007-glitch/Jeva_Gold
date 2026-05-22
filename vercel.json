@@ -1,7 +1,7 @@
 {
   "framework": "vite",
   "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "outputDirectory": "jeeva-gold-frontend/dist",
   "rewrites": [
     {
       "source": "/((?!api/).*)",
