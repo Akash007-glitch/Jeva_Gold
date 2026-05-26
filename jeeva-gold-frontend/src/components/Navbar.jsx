@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCartStore } from "../store/CartStore1";
-import logo from '../../../image/logo.png';
+import logo from '../../../image/logo.webp';
 import './Navbar.css';
 
 export default function Navbar() {

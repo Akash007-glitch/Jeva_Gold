@@ -1,3 +1,4 @@
+import { useNavigate, useLocation } from "react-router-dom";
 import "./WhyChooseSection.css";
 
 const features = [
@@ -23,6 +24,25 @@ function FeatureCard({ icon, title, description, index }) {
 }
 
 export default function WhyChooseSection() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleAction = () => {
+    const scrollToSection = () => {
+      const el = document.getElementById("collection");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(scrollToSection, 350);
+    } else {
+      scrollToSection();
+    }
+  };
+
   return (
     <section className="why-choose">
       <div className="why-choose__inner">
@@ -54,7 +74,7 @@ export default function WhyChooseSection() {
             <p className="cta-block__subtitle">
               Join thousands of tea lovers who have made the switch to Jeeva Gold.
             </p>
-            <button className="cta-block__btn">
+            <button className="cta-block__btn" onClick={handleAction}>
               Try Jeeva Gold Today
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>
@@ -65,3 +85,4 @@ export default function WhyChooseSection() {
     </section>
   );
 }
+

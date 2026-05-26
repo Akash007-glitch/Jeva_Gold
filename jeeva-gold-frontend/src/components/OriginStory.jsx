@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import './OriginStory.css';
 
 export default function OriginStory() {
+  const [expanded, setExpanded] = useState(false);
+
   return (
     <section className="origin section-py" id="about">
       <div className="container origin__grid">
@@ -42,10 +45,24 @@ export default function OriginStory() {
             For three generations, we have worked with local artisans to perfect the art of tea
             oxidation, ensuring every tin of Jeva Gold carries the soul of our land.
           </p>
+
+          {expanded && (
+            <div className="origin__text-expanded">
+              <p className="origin__text">
+                Our legacy began in the late 19th century, in the heart of Upper Assam's tea belt. We believe in single-origin purity, where every leaf is hand-plucked during the peak second flush season when the tea leaves hold their most concentrated flavors.
+              </p>
+              <p className="origin__text">
+                By maintaining long-term partnerships with local farming communities, we practice biodynamic agriculture that rejuvenates the soil. This dedicated care produces a rich, copper-colored cup with sweet malty undertones that has defined our family's tea for over a century.
+              </p>
+            </div>
+          )}
+
           <div className="origin__cta-wrap">
-            <button className="origin__cta-btn">
-              Read Our Full Story
-              <span className="material-symbols-outlined">trending_flat</span>
+            <button className="origin__cta-btn" onClick={() => setExpanded(!expanded)}>
+              {expanded ? "Show Less" : "Read Our Full Story"}
+              <span className="material-symbols-outlined">
+                {expanded ? "expand_less" : "trending_flat"}
+              </span>
             </button>
           </div>
         </div>
@@ -53,3 +70,4 @@ export default function OriginStory() {
     </section>
   );
 }
+

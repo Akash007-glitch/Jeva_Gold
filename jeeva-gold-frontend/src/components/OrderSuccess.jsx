@@ -13,12 +13,20 @@
 // ─────────────────────────────────────────────
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import useSEO from '../utils/useSEO';
 import './OrderSuccess.css';
 const OrderSuccess = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
+    useSEO({
+        title: "Order Success | Jeeva Gold",
+        description: "Thank you for your order! Your Jeeva Gold premium tea is on its way.",
+        keywords: "Jeeva Gold, Order Confirmed, Order Success, Premium Tea",
+    });
+
     // Razorpay payment ID passed from CheckoutPage after successful verification
+
     const paymentId = searchParams.get("payment_id");
 
     return (

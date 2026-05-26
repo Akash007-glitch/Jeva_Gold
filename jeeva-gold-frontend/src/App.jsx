@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import Lenis from 'lenis';
 import Navbar from "./components/Navbar";
+
 import Hero from "./components/Hero";
 import ProductShowcase from "./components/ProductShowcase";
 import OriginStory from "./components/OriginStory";
@@ -14,6 +16,7 @@ import WhyChooseSection from "./components/WhyChooseSection";
 import ShoppingCart from './components/ShoppingCart'
 import CheckoutPage from './components/CheckoutPage'
 import OrderSuccess from "./components/OrderSuccess";
+import loadingLogo from '../../image/loading_logo.webp';
 
 function LoadingScreen({ visible }) {
   return (
@@ -23,12 +26,13 @@ function LoadingScreen({ visible }) {
       aria-live="polite"
       aria-label="Loading Jeeva Gold"
     >
-      <div className="site-loader__mark" aria-hidden="true">
-        <span className="site-loader__leaf" />
+      <div className="site-loader__logo-wrap" aria-hidden="true">
+        <img src={loadingLogo} alt="" className="site-loader__logo" />
       </div>
       <p className="site-loader__brand">Jeeva Gold</p>
     </div>
   );
+
 }
 
 function ScrollToTopOnRoute() {
@@ -109,6 +113,29 @@ function ScrollReveal() {
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
+
+  // Initialize Lenis Momentum Smooth Scrolling
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+    });
+
+    let rafId;
+    function raf(time) {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    }
+
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
+
 
   useEffect(() => {
     let loadComplete = document.readyState === "complete";

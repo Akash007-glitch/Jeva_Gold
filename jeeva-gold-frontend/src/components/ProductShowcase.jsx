@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import './ProductShowcase.css';
 import { useCartStore } from '../store/CartStore1';
-import product2Img from '../../../image/product2.jpeg';
-import Product3Img from '../../../image/Elaichi.jpg';
-import Product4Img from '../../../image/GreenTea.jpg';
-import Product5Img from '../../../image/MasalaChai.jpg';
-import RoyalTeaImg from '../../../image/product6.png';
-import premiumTeaImg from '../../../image/pre.png';
+import product2Img from '../../../image/product2.webp';
+import Product3Img from '../../../image/Elaichi.webp';
+import Product4Img from '../../../image/GreenTea.webp';
+import Product5Img from '../../../image/MasalaChai.webp';
+import RoyalTeaImg from '../../../image/product6.webp';
+import premiumTeaImg from '../../../image/pre.webp';
 
 const products = [
   {

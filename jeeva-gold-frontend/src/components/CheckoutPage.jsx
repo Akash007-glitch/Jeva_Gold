@@ -15,10 +15,18 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCartStore } from "../store/CartStore1";
 import { initiatePayment } from "../utils/initiatePayment";
+import useSEO from '../utils/useSEO';
 import './CheckoutPage.css';
 
 const CheckoutPage = () => {
+  useSEO({
+    title: "Secure Checkout | Jeeva Gold",
+    description: "Complete your purchase of Jeeva Gold premium tea. Safe and secure checkout with multiple payment options.",
+    keywords: "Jeeva Gold, Checkout, Secure Payment, Buy Tea Online, Indian Chai",
+  });
+
   // Shipping address lives in local state — it's only needed on this screen
+
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -117,24 +125,24 @@ const CheckoutPage = () => {
                 </div>
                 <div className="co-field">
                   <label>Phone *</label>
-                  <input name="phone" type="tel" placeholder="9876543210" value={form.phone} onChange={handleChange} />
+                  <input name="phone" type="tel" placeholder="Mobile Number" value={form.phone} onChange={handleChange} />
                 </div>
                 <div className="co-field co-field-full">
                   <label>Street Address *</label>
-                  <input name="street" type="text" placeholder="124 Forest Canopy Lane" value={form.street} onChange={handleChange} />
+                  <input name="street" type="text" placeholder="" value={form.street} onChange={handleChange} />
                 </div>
                 <div className="co-field co-field-full">
                   <label>Apartment, Suite (Optional)</label>
-                  <input name="apartment" type="text" placeholder="Penthouse A" value={form.apartment} onChange={handleChange} />
+                  <input name="apartment" type="text" placeholder="" value={form.apartment} onChange={handleChange} />
                 </div>
                 <div className="co-field">
                   <label>City *</label>
-                  <input name="city" type="text" placeholder="Guwahati" value={form.city} onChange={handleChange} />
+                  <input name="city" type="text" placeholder="" value={form.city} onChange={handleChange} />
                 </div>
                 <div className="co-field-pair">
                   <div className="co-field">
                     <label>State</label>
-                    <input name="state" type="text" placeholder="Assam" value={form.state} onChange={handleChange} />
+                    <input name="state" type="text" placeholder="Amssam" value={form.state} onChange={handleChange} />
                   </div>
                   <div className="co-field">
                     <label>PIN Code *</label>
@@ -251,12 +259,12 @@ const CheckoutPage = () => {
               </div>
 
               <div className="co-kit-note">
-                <div className="co-kit-heading">
+                {/* <div className="co-kit-heading">
                   <span className="material-symbols-outlined">local_shipping</span>
-                </div>
-                <p className="co-kit-desc">
+                </div> */}
+                {/* <p className="co-kit-desc">
                   Shipped in signature biodegradable packaging, infused with the scent of fresh Assam leaves.
-                </p>
+                </p> */}
               </div>
             </div>
           </aside>

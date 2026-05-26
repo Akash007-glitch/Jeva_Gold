@@ -12,12 +12,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCartStore } from "../store/CartStore1";
+import useSEO from '../utils/useSEO';
 import './ShoppingCart.css';
 
 const ShoppingCart = () => {
+  useSEO({
+    title: "Shopping Cart | Jeeva Gold",
+    description: "Review your selected premium Assam teas, adjust quantities, and proceed to secure checkout.",
+    keywords: "Jeeva Gold, Shopping Cart, Cart, Buy Tea Online, Indian Chai",
+  });
+
   // Pull everything from Zustand — not local state
   const { items, updateQty, removeItem, getSubtotal, getShipping, getTax, getTotal } =
     useCartStore();
+
 
   const [promoCode, setPromoCode] = useState("");
   const navigate = useNavigate();
@@ -134,7 +142,7 @@ const ShoppingCart = () => {
                 </div>
               </div>
 
-              <div className="sc-promo">
+              {/* <div className="sc-promo">
                 <label>Promo Code</label>
                 <div className="sc-promo-field">
                   <input
@@ -145,7 +153,7 @@ const ShoppingCart = () => {
                   />
                   <button>APPLY</button>
                 </div>
-              </div>
+              </div> */}
 
               {/* Navigates to /checkout — no data passed in URL
                   CheckoutPage will read cart from Zustand itself */}
@@ -165,10 +173,10 @@ const ShoppingCart = () => {
               </div>
             </div>
 
-            <p className="sc-eco-note">
+            {/* <p className="sc-eco-note">
               Every purchase supports sustainable farming practices in the upper Assam valley.
               Complimentary shipping is included on every order.
-            </p>
+            </p> */}
           </div>
         </div>
       </main>

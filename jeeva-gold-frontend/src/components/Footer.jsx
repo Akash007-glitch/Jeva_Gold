@@ -1,4 +1,4 @@
-import logo from '../../../image/logo.png';
+import logo from '../../../image/logo.webp';
 import './Footer.css';
 
 const instagramUrl =

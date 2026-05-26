@@ -1,8 +1,16 @@
 import './Hero.css';
-import Bgimage from '../../../image/Bg.jpg'
+import Bgimage from '../../../image/Bg.webp';
+import useSEO from '../utils/useSEO';
 
 export default function Hero() {
+  useSEO({
+    title: "Jeeva Gold | Premium Assam Tea & Kadak Chai",
+    description: "Experience the authentic, bold, and kadak taste of premium handpicked Assam tea direct from the gardens of the Brahmaputra valley. Order Jeva Gold today.",
+    keywords: "Jeeva Gold, Assam Tea, Premium Tea, Kadak Chai, Masala Chai, Elaichi Tea, Green Tea, Buy Tea Online, Indian Chai",
+  });
+
   return (
+
     <section
       className="hero"
       style={{ backgroundImage: `url(${Bgimage})` }}
