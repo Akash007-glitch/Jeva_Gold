@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://Akasg007-glitch.github.io/jeeva_gold/sitemap.xml
+Sitemap: https://jeevagold.com/sitemap.xml
