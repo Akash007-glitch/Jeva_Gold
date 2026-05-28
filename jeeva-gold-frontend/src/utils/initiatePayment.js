@@ -140,7 +140,7 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
 
                 // ── STEP 5: Strapi verified → navigate to success ──
                 if (result.success) {
-                    onSuccess(response.razorpay_payment_id);
+                    onSuccess(response.razorpay_payment_id, result.order_id);
                 } else {
                     onFailure("Payment verification failed. Contact support.");
                 }

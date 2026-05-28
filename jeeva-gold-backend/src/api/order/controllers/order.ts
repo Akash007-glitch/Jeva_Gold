@@ -239,4 +239,43 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
       return handleControllerError(ctx, error, 'Razorpay webhook handling failed');
     }
   },
+
+  async trackOrder(ctx: any) {
+    try {
+      const { id, email } = ctx.query;
+      if (!id || !email) {
+        return ctx.badRequest('Missing order ID or email address');
+      }
+
+      const order = await strapi.db.query('api::order.order').findOne({
+        where: {
+          id: Number(id),
+          customer_email: email.trim().toLowerCase(),
+        },
+      });
+
+      if (!order) {
+        return ctx.notFound('Order not found or email address does not match');
+      }
+
+      return ctx.send({
+        success: true,
+        order: {
+          id: order.id,
+          customer_name: order.customer_name,
+          customer_email: order.customer_email,
+          total_amount: order.total_amount,
+          payment_status: order.payment_status,
+          dispatch_status: order.dispatch_status,
+          dispatch_notes: order.dispatch_notes,
+          createdAt: order.createdAt,
+          paid_at: order.paid_at,
+          items: order.items,
+          shipping_address: order.shipping_address,
+        },
+      });
+    } catch (error: any) {
+      return handleControllerError(ctx, error, 'Failed to track order');
+    }
+  },
 }));

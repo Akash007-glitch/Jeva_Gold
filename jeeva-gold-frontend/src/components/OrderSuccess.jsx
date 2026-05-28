@@ -28,6 +28,8 @@ const OrderSuccess = () => {
     // Razorpay payment ID passed from CheckoutPage after successful verification
 
     const paymentId = searchParams.get("payment_id");
+    const orderId = searchParams.get("order_id");
+    const email = searchParams.get("email") || "";
 
     return (
         <div className="os-root">
@@ -49,13 +51,21 @@ const OrderSuccess = () => {
                         Your premium Assam tea is on its way. Thank you for choosing Jeeva Gold.
                     </p>
 
-                    {/* Show Razorpay payment ID as confirmation reference */}
-                    {paymentId && (
-                        <div className="os-ref">
-                            <span className="os-ref-label">Payment Reference</span>
-                            <span className="os-ref-value">{paymentId}</span>
-                        </div>
-                    )}
+                    {/* Show Order reference ID & payment ID */}
+                    <div className="os-refs">
+                        {orderId && (
+                            <div className="os-ref">
+                                <span className="os-ref-label">Order ID</span>
+                                <span className="os-ref-value">#{orderId}</span>
+                            </div>
+                        )}
+                        {paymentId && (
+                            <div className="os-ref">
+                                <span className="os-ref-label">Payment ID</span>
+                                <span className="os-ref-value">{paymentId}</span>
+                            </div>
+                        )}
+                    </div>
 
                     <div className="os-steps">
                         <div className="os-step">
@@ -87,8 +97,16 @@ const OrderSuccess = () => {
                         <button className="os-primary-btn" onClick={() => navigate("/")}>
                             Continue Shopping
                         </button>
-                        <button className="os-secondary-btn" onClick={() => navigate("/orders")}>
-                            View My Orders
+                        <button 
+                            className="os-secondary-btn" 
+                            onClick={() => {
+                                const url = orderId 
+                                    ? `/track-order?id=${orderId}&email=${encodeURIComponent(email)}` 
+                                    : '/track-order';
+                                navigate(url);
+                            }}
+                        >
+                            Track My Order
                         </button>
                     </div>
                 </div>

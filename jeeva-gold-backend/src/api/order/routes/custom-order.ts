@@ -10,6 +10,16 @@
 export default {
   routes: [
     {
+      method: 'GET',
+      path: '/orders/track',
+      handler: 'api::order.order.trackOrder',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
       method: 'POST',
       path: '/orders/create-razorpay-order',
       handler: 'api::order.order.createRazorpayOrder',

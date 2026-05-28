@@ -1,0 +1,539 @@
+/* OrderTracking.css — Jeeva Gold Order Tracking System */
+
+.ot-root {
+  --primary: #115637;
+  --primary-glow: rgba(17, 86, 55, 0.15);
+  --gold: #c5a059;
+  --surface: #f8faf9;
+  --surface-card: #ffffff;
+  --on-surface: #191c1c;
+  --on-surface-variant: #404942;
+  --outline-variant: #bfc9c0;
+  --border-radius: 1.25rem;
+  --font-headline: "Noto Serif", serif;
+  --font-body: "Manrope", sans-serif;
+  --green-success: #15803d;
+  --red-error: #b91c1c;
+
+  font-family: var(--font-body);
+  background: var(--surface);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.ot-header {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.ot-header-inner {
+  max-width: 1152px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ot-brand {
+  font-family: var(--font-headline);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+}
+
+.ot-nav-btn {
+  background: transparent;
+  color: var(--on-surface-variant);
+  border: 1px solid var(--outline-variant);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ot-nav-btn:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+  background: rgba(17, 86, 55, 0.03);
+}
+
+/* Container */
+.ot-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1.5rem;
+}
+
+.ot-container {
+  width: 100%;
+  max-width: 800px;
+}
+
+/* General Card Design */
+.ot-card {
+  background: var(--surface-card);
+  border-radius: var(--border-radius);
+  padding: 2.5rem;
+  box-shadow: 0 20px 50px rgba(17, 86, 55, 0.06);
+  border: 1px solid rgba(17, 86, 55, 0.03);
+}
+
+.ot-card-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.ot-card-header h2 {
+  font-family: var(--font-headline);
+  font-size: 2rem;
+  color: var(--primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.ot-card-header p {
+  color: var(--on-surface-variant);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* Search Form */
+.ot-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.ot-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.ot-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--on-surface-variant);
+}
+
+.ot-field input {
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--outline-variant);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--on-surface);
+  background: var(--surface);
+  transition: all 0.2s;
+}
+
+.ot-field input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+.ot-error-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(185, 28, 28, 0.06);
+  border: 1px solid rgba(185, 28, 28, 0.15);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: var(--red-error);
+  font-size: 0.9rem;
+}
+
+.ot-submit-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+
+.ot-submit-btn:hover {
+  background: #0f4c30;
+  transform: translateY(-1px);
+}
+
+.ot-submit-btn:disabled {
+  background: var(--outline-variant);
+  cursor: not-allowed;
+}
+
+/* Details Card Header */
+.ot-details-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--outline-variant);
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.ot-badge {
+  background: var(--primary-glow);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.25rem 0.75rem;
+  border-radius: 2rem;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.ot-details-header h2 {
+  font-family: var(--font-headline);
+  font-size: 1.75rem;
+  color: var(--primary);
+  margin: 0;
+}
+
+.ot-date {
+  color: var(--on-surface-variant);
+  font-size: 0.85rem;
+  margin: 0.25rem 0 0 0;
+}
+
+.ot-clear-btn {
+  background: transparent;
+  color: var(--on-surface-variant);
+  border: 1px solid var(--outline-variant);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ot-clear-btn:hover {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+/* Stepper */
+.ot-stepper {
+  margin-bottom: 2.5rem;
+}
+
+.ot-steps {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+}
+
+.ot-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  flex: 1;
+}
+
+.ot-step-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--on-surface-variant);
+  margin-bottom: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.ot-step-content h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem 0;
+  color: var(--on-surface);
+}
+
+.ot-step-content p {
+  font-size: 0.75rem;
+  color: var(--on-surface-variant);
+  margin: 0;
+}
+
+.ot-connector {
+  flex: 1;
+  height: 2px;
+  background: var(--outline-variant);
+  margin-top: 1.375rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Stepper States */
+.ot-step--completed .ot-step-icon {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+.ot-step--completed .ot-step-content h4 {
+  color: var(--primary);
+}
+
+.ot-step--active .ot-step-icon {
+  background: white;
+  border-color: var(--gold);
+  color: var(--gold);
+  box-shadow: 0 0 0 4px rgba(197, 160, 89, 0.15);
+  animation: pulse-gold 2s infinite;
+}
+
+.ot-step--active .ot-step-content h4 {
+  color: var(--gold);
+}
+
+.ot-connector--completed {
+  background: var(--primary);
+}
+
+/* Stepper pulse keyframes */
+@keyframes pulse-gold {
+  0% {
+    box-shadow: 0 0 0 0px rgba(197, 160, 89, 0.3);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(197, 160, 89, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0px rgba(197, 160, 89, 0);
+  }
+}
+
+/* Cancelled Alert */
+.ot-cancelled-alert {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(185, 28, 28, 0.05);
+  border: 1px dashed rgba(185, 28, 28, 0.2);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  color: var(--red-error);
+}
+
+.ot-cancelled-alert .material-symbols-outlined {
+  font-size: 3rem;
+}
+
+.ot-cancelled-alert h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+}
+
+.ot-cancelled-alert p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+/* Shipping Info & Notes Box */
+.ot-notes-box {
+  display: flex;
+  gap: 1rem;
+  background: rgba(197, 160, 89, 0.06);
+  border: 1px solid rgba(197, 160, 89, 0.18);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+  animation: slide-in 0.3s ease-out;
+}
+
+.ot-notes-icon {
+  color: var(--gold);
+  font-size: 1.75rem;
+}
+
+.ot-notes-box h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #8c6b32;
+  margin: 0 0 0.35rem 0;
+}
+
+.ot-notes-box p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--on-surface);
+  margin: 0;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Info Grid */
+.ot-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.ot-info-card {
+  background: var(--surface);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.ot-info-card h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary);
+  margin: 0 0 1rem 0;
+  border-bottom: 1px solid var(--outline-variant);
+  padding-bottom: 0.5rem;
+}
+
+.ot-customer-name {
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.ot-address-text {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--on-surface-variant);
+  margin: 0 0 1rem 0;
+}
+
+.ot-customer-contact {
+  font-size: 0.85rem;
+  color: var(--on-surface-variant);
+  margin: 0;
+}
+
+/* Items List */
+.ot-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.ot-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.ot-item-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.ot-item-name {
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
+.ot-item-size {
+  font-size: 0.75rem;
+  color: var(--on-surface-variant);
+}
+
+.ot-item-qty-price {
+  color: var(--on-surface-variant);
+  font-size: 0.8rem;
+}
+
+.ot-pricing-breakdown {
+  border-top: 1px solid var(--outline-variant);
+  padding-top: 0.75rem;
+}
+
+.ot-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--on-surface);
+}
+
+.ot-total-price {
+  color: var(--primary);
+  font-size: 1.05rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .ot-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ot-steps {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding-left: 1rem;
+  }
+
+  .ot-step {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    gap: 1rem;
+  }
+
+  .ot-step-icon {
+    margin-bottom: 0;
+  }
+
+  .ot-connector {
+    display: none; /* Hide connector lines in vertical stack */
+  }
+
+  .ot-card {
+    padding: 1.5rem;
+  }
+}

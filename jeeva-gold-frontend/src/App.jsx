@@ -16,7 +16,9 @@ import WhyChooseSection from "./components/WhyChooseSection";
 import ShoppingCart from './components/ShoppingCart'
 import CheckoutPage from './components/CheckoutPage'
 import OrderSuccess from "./components/OrderSuccess";
+import OrderTracking from "./components/OrderTracking";
 import loadingLogo from '../../image/loading_logo.webp';
+
 
 function LoadingScreen({ visible }) {
   return (
@@ -198,6 +200,7 @@ export default function App() {
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/order-success" element={<OrderSuccess />} />
+        <Route path="/track-order" element={<OrderTracking />} />
       </Routes>
 
       {/* Put common global components like Footer outside <Routes> */}

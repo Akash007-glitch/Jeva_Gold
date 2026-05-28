@@ -77,10 +77,10 @@ const CheckoutPage = () => {
       shippingMethod,            // "standard" or "express"
       totalAmount: getTotal(),
 
-      onSuccess: (paymentId) => {
+      onSuccess: (paymentId, orderId) => {
         clearCart();   // wipe Zustand store
-        // Navigate to success page, pass paymentId so user can see confirmation
-        navigate(`/order-success?payment_id=${paymentId}`);
+        // Navigate to success page, pass paymentId and orderId/email so user can see confirmation and track order
+        navigate(`/order-success?payment_id=${paymentId}&order_id=${orderId}&email=${encodeURIComponent(form.email)}`);
       },
 
       onFailure: (message) => {

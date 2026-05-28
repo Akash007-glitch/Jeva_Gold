@@ -10,8 +10,8 @@ import premiumTeaImg from '../../../image/pre.webp';
 
 const products = [
   {
-    id: 'starter-1',
-    productId: 'starter-1',
+    id: 'starter-2',
+    productId: 'starter-2',
     name: 'Jeeva Gold Premium Tea',
     price: 210,
     quantity: '250g x 2 Pack',
@@ -21,8 +21,8 @@ const products = [
     featured: true,
   },
   {
-    id: 'starter-2',
-    productId: 'starter-2',
+    id: 'starter-1',
+    productId: 'starter-1',
     name: 'Jeeva Gold Elaichi',
     price: 270,
     quantity: '250g x 2 Pack',
