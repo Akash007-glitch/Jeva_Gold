@@ -23,7 +23,7 @@ const ShoppingCart = () => {
   });
 
   // Pull everything from Zustand — not local state
-  const { items, updateQty, removeItem, getSubtotal, getShipping, getTax, getTotal } =
+  const { items, updateQty, removeItem, getSubtotal, getTax, getTotal } =
     useCartStore();
 
 
@@ -123,13 +123,9 @@ const ShoppingCart = () => {
                   <span>Subtotal</span>
                   <span>{formatINR(getSubtotal())}</span>
                 </div>
-                <div className="sc-total-row">
-                  <span>Shipping</span>
-                  <span>
-                    {getShipping() === 0
-                      ? <span className="sc-free">Free</span>
-                      : formatINR(getShipping())}
-                  </span>
+                <div className="sc-shipping-box">
+                  <span className="material-symbols-outlined">local_shipping</span>
+                  <span>Shipping cost is included.</span>
                 </div>
                 {/* <div className="sc-total-row">
                   <span>GST (18%)</span>

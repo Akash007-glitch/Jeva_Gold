@@ -21,6 +21,7 @@
     "@strapi/plugin-cloud": "5.42.0",
     "@strapi/plugin-users-permissions": "5.42.0",
     "@strapi/strapi": "5.42.0",
+    "axios": "^1.16.1",
     "better-sqlite3": "12.8.0",
     "pg": "^8.21.0",
     "razorpay": "^2.9.6",

@@ -385,6 +385,33 @@
   font-weight: 500;
 }
 
+.sc-shipping-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background-color: rgba(176, 243, 174, 0.15);
+  border: 1px dashed var(--on-secondary-container);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  color: var(--on-secondary-container);
+  font-weight: 500;
+  margin: 0.25rem 0;
+  transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.sc-shipping-box:hover {
+  background-color: rgba(176, 243, 174, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(52, 113, 58, 0.05);
+}
+
+.sc-shipping-box .material-symbols-outlined {
+  font-size: 1.2rem;
+  color: var(--on-secondary-container);
+}
+
 .sc-divider {
   height: 1px;
   background: rgba(191, 201, 192, 0.2);

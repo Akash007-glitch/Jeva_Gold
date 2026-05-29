@@ -12,6 +12,7 @@ import {
   buildOwnerOrderSummary,
   notifyOwnerForPaidOrder,
 } from '../services/owner-notification';
+import { sendOrderConfirmation } from '../../../services/whatsapp';
 
 const getRazorpay = () => {
   const key_id = process.env.RAZORPAY_KEY_ID;
@@ -53,6 +54,13 @@ const markOrderPaidAndNotifyOwner = async (strapi: any, order: any, razorpay_pay
     data: paidOrderData,
   });
 
+  await sendOrderConfirmation({ // WhatsApp order confirmation call
+    customerName: paidOrder.customer_name,
+    customerPhone: paidOrder.customer_phone,
+    orderId: paidOrder.id,
+    amount: paidOrder.total_amount,
+  });
+
   const summary = buildOwnerOrderSummary(paidOrder);
   const notification = await notifyOwnerForPaidOrder(strapi, {
     ...paidOrder,
@@ -74,6 +82,7 @@ const markOrderPaidAndNotifyOwner = async (strapi: any, order: any, razorpay_pay
 export default factories.createCoreController('api::order.order', ({ strapi }) => ({
   async createRazorpayOrder(ctx: any) {
     try {
+      console.log('[DEBUG] createRazorpayOrder - process.env.RAZORPAY_KEY_ID =', process.env.RAZORPAY_KEY_ID);
       const orderInput = normalizeCreateOrderPayload(ctx.request.body);
 
       const razorpay = getRazorpay();
