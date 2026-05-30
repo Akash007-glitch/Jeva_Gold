@@ -255,7 +255,7 @@ const CheckoutPage = () => {
                 </div>
                 <div className="co-total-row">
                   <span>Shipping</span>
-                  <span>{getShipping() === 0 ? "Free" : formatINR(getShipping())}</span>
+                  <span>{getShipping() === 0 ? "Shipping Included" : formatINR(getShipping())}</span>
                 </div>
                 {/* <div className="co-total-row">
                   <span>GST (18%)</span>
