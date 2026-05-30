@@ -90,7 +90,6 @@ export async function initiatePayment({ items, shippingAddress, shippingMethod, 
                     customer_phone: shippingAddress?.phone || shippingAddress?.mobile || "",
                     shipping_address: customerAddress,
                     items: normalizedItems,
-                    total_amount: Number(totalAmount || 0),
                 }),
             }
         );

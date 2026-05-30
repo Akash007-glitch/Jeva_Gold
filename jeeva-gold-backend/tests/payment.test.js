@@ -75,6 +75,19 @@ test('rejects tampered create-order totals', () => {
   );
 });
 
+test('accepts create-order payloads without a frontend total', () => {
+  const order = payment.normalizeCreateOrderPayload({
+    customer_name: 'Test User',
+    customer_email: 'test@example.com',
+    customer_phone: '9876543210',
+    shipping_address: '123 Test Street, Guwahati, Assam, 781001',
+    items: [{ product_id: 'starter-3', quantity: 1 }],
+  });
+
+  assert.equal(order.items[0].product_id, 'starter-3');
+  assert.equal(order.total_amount, 300);
+});
+
 test('rejects unknown product ids', () => {
   assert.throws(
     () =>
