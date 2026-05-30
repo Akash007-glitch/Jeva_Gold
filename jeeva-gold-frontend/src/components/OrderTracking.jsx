@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import useSEO from "../utils/useSEO";
 import "./OrderTracking.css";
 
@@ -19,12 +19,13 @@ const getApiBase = () => {
 };
 
 const OrderTracking = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const { orderNumber } = useParams();
   const navigate = useNavigate();
 
   const [orderId, setOrderId] = useState("");
-  const [email, setEmail] = useState("");
-  
+  const [tokenInput, setTokenInput] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState(null);
   const [error, setError] = useState(null);
@@ -35,38 +36,37 @@ const OrderTracking = () => {
     keywords: "Jeeva Gold, Track Order, Shipment Tracker, Order Status, Assam Tea",
   });
 
-  const queryId = searchParams.get("id");
-  const queryEmail = searchParams.get("email");
+  const token = searchParams.get("token");
 
   useEffect(() => {
-    if (queryId && queryEmail) {
-      setOrderId(queryId);
-      setEmail(queryEmail);
-      fetchOrderStatus(queryId, queryEmail);
+    if (orderNumber && token) {
+      setOrderId(orderNumber);
+      setTokenInput(token);
+      fetchOrderStatus(orderNumber, token);
     } else {
       setOrder(null);
       setError(null);
     }
-  }, [queryId, queryEmail]);
+  }, [orderNumber, token]);
 
-  const fetchOrderStatus = async (id, emailAddr) => {
+  const fetchOrderStatus = async (num, tok) => {
     setLoading(true);
     setError(null);
     try {
       const apiBase = getApiBase();
       const res = await fetch(
-        `${apiBase}/api/orders/track?id=${id}&email=${encodeURIComponent(
-          emailAddr.trim().toLowerCase()
-        )}`
+        `${apiBase}/api/orders/track?order_number=${encodeURIComponent(
+          num.trim()
+        )}&token=${encodeURIComponent(tok.trim())}`
       );
 
       if (!res.ok) {
         const text = await res.text();
-        let message = "Failed to fetch order status. Please check your credentials.";
+        let message = "Invalid or expired tracking link";
         try {
           const json = JSON.parse(text);
-          message = json.error?.message || json.message || message;
-        } catch {}
+          message = json.message || json.error?.message || message;
+        } catch { }
         throw new Error(message);
       }
 
@@ -86,54 +86,52 @@ const OrderTracking = () => {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (!orderId || !email) {
-      setError("Please fill in both Order ID and Email.");
+    if (!orderId || !tokenInput) {
+      setError("Please fill in both Order Number and Tracking Token.");
       return;
     }
-    setSearchParams({ id: orderId, email: email });
+    navigate(`/track/${orderId.trim()}?token=${tokenInput.trim()}`);
   };
 
   const handleClear = () => {
     setOrderId("");
-    setEmail("");
+    setTokenInput("");
     setOrder(null);
     setError(null);
-    setSearchParams({});
+    navigate("/track-order");
   };
 
   // Stepper state computation
   const getStepStatus = (stepName) => {
     if (!order) return "pending";
 
-    const payment = order.payment_status; // 'pending', 'paid', 'failed'
-    const dispatch = order.dispatch_status; // 'pending_payment', 'ready_to_dispatch', 'dispatched', 'cancelled'
+    const dispatch = order.dispatch_status; // 'pending_payment', 'confirmed', 'packed', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'
 
-    if (payment === "failed" || dispatch === "cancelled") {
+    if (dispatch === "cancelled" || order.payment_status === "failed") {
       return "cancelled";
     }
 
-    switch (stepName) {
-      case "placed":
-        return "completed"; // Order is always created first
+    const statusHierarchy = ["pending_payment", "confirmed", "packed", "shipped", "out_for_delivery", "delivered"];
+    const currentIndex = statusHierarchy.indexOf(dispatch);
 
-      case "paid":
-        return payment === "paid" ? "completed" : "active";
+    const stepMap = {
+      placed: 0,
+      confirmed: 1,
+      packed: 2,
+      shipped: 3,
+      out_for_delivery: 4,
+      delivered: 5
+    };
 
-      case "ready":
-        if (dispatch === "ready_to_dispatch" || dispatch === "dispatched") {
-          return "completed";
-        }
-        return payment === "paid" ? "active" : "pending";
+    const stepIndex = stepMap[stepName];
+    if (stepIndex === undefined) return "pending";
 
-      case "dispatched":
-        if (dispatch === "dispatched") {
-          return "completed";
-        }
-        return dispatch === "ready_to_dispatch" ? "active" : "pending";
-
-      default:
-        return "pending";
+    if (currentIndex >= stepIndex) {
+      return "completed";
+    } else if (currentIndex === stepIndex - 1) {
+      return "active";
     }
+    return "pending";
   };
 
   const formatDate = (dateString) => {
@@ -142,10 +140,10 @@ const OrderTracking = () => {
     return isNaN(date.getTime())
       ? ""
       : date.toLocaleDateString("en-IN", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        });
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
   };
 
   const formatINR = (amount) => `₹${Number(amount || 0).toLocaleString("en-IN")}`;
@@ -153,12 +151,12 @@ const OrderTracking = () => {
   return (
     <div className="ot-root">
       <header className="ot-header">
-        <div className="ot-header-inner">
-          <h1 className="ot-brand">Jeeva Gold</h1>
+        {/* <div className="ot-header-inner">
+          <h1 className="ot-brand" style={{ cursor: "pointer" }} onClick={() => navigate("/")}>Jeeva Gold</h1>
           <button className="ot-nav-btn" onClick={() => navigate("/")}>
             Back to Home
           </button>
-        </div>
+        </div> */}
       </header>
 
       <main className="ot-main">
@@ -173,11 +171,11 @@ const OrderTracking = () => {
 
               <form onSubmit={handleSearchSubmit} className="ot-form">
                 <div className="ot-field">
-                  <label htmlFor="orderId">Order ID *</label>
+                  <label htmlFor="orderId">Order Number *</label>
                   <input
                     id="orderId"
-                    type="number"
-                    placeholder="e.g. 42"
+                    type="text"
+                    placeholder="e.g. ORD10001"
                     value={orderId}
                     onChange={(e) => setOrderId(e.target.value)}
                     required
@@ -185,13 +183,13 @@ const OrderTracking = () => {
                 </div>
 
                 <div className="ot-field">
-                  <label htmlFor="email">Email Address *</label>
+                  <label htmlFor="tokenInput">Tracking Token *</label>
                   <input
-                    id="email"
-                    type="email"
-                    placeholder="e.g. name@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    id="tokenInput"
+                    type="text"
+                    placeholder="Enter secure tracking token"
+                    value={tokenInput}
+                    onChange={(e) => setTokenInput(e.target.value)}
                     required
                   />
                 </div>
@@ -217,11 +215,19 @@ const OrderTracking = () => {
                   <span className="ot-badge">
                     {order.dispatch_status === "cancelled"
                       ? "Cancelled"
-                      : order.dispatch_status === "dispatched"
-                      ? "Dispatched"
-                      : "Processing"}
+                      : order.dispatch_status === "delivered"
+                        ? "Delivered"
+                        : order.dispatch_status === "out_for_delivery"
+                          ? "Out For Delivery"
+                          : order.dispatch_status === "shipped"
+                            ? "Shipped"
+                            : order.dispatch_status === "packed"
+                              ? "Packed"
+                              : order.dispatch_status === "confirmed"
+                                ? "Confirmed"
+                                : "Processing"}
                   </span>
-                  <h2>Order #{order.id}</h2>
+                  <h2>Order #{order.order_number || order.id}</h2>
                   <p className="ot-date">Placed on {formatDate(order.createdAt)}</p>
                 </div>
                 <button className="ot-clear-btn" onClick={handleClear}>
@@ -244,58 +250,101 @@ const OrderTracking = () => {
                     {/* Step 1: Placed */}
                     <div className={`ot-step ot-step--${getStepStatus("placed")}`}>
                       <div className="ot-step-icon">
-                        <span className="material-symbols-outlined">inventory_2</span>
+                        <span className="material-symbols-outlined">shopping_cart</span>
                       </div>
                       <div className="ot-step-content">
-                        <h4>Order Placed</h4>
+                        <h4>Placed</h4>
                         <p>{formatDate(order.createdAt)}</p>
                       </div>
                     </div>
-                    
-                    <div className={`ot-connector ot-connector--${getStepStatus("paid") === "completed" ? "completed" : "pending"}`} />
 
-                    {/* Step 2: Paid */}
-                    <div className={`ot-step ot-step--${getStepStatus("paid")}`}>
+                    <div className={`ot-connector ot-connector--${getStepStatus("confirmed") === "completed" ? "completed" : "pending"}`} />
+
+                    {/* Step 2: Confirmed */}
+                    <div className={`ot-step ot-step--${getStepStatus("confirmed")}`}>
                       <div className="ot-step-icon">
-                        <span className="material-symbols-outlined">payments</span>
+                        <span className="material-symbols-outlined">verified</span>
                       </div>
                       <div className="ot-step-content">
-                        <h4>Payment Verified</h4>
-                        <p>{order.payment_status === "paid" ? formatDate(order.paid_at || order.createdAt) : "Awaiting payment"}</p>
+                        <h4>Confirmed</h4>
+                        <p>{order.paid_at ? `Verified on ${formatDate(order.paid_at)}` : (order.payment_status === "paid" ? "Confirmed" : "Awaiting Confirmation")}</p>
                       </div>
                     </div>
 
-                    <div className={`ot-connector ot-connector--${getStepStatus("ready") === "completed" ? "completed" : "pending"}`} />
+                    <div className={`ot-connector ot-connector--${getStepStatus("packed") === "completed" ? "completed" : "pending"}`} />
 
-                    {/* Step 3: Packing */}
-                    <div className={`ot-step ot-step--${getStepStatus("ready")}`}>
+                    {/* Step 3: Packed */}
+                    <div className={`ot-step ot-step--${getStepStatus("packed")}`}>
                       <div className="ot-step-icon">
                         <span className="material-symbols-outlined">package_2</span>
                       </div>
                       <div className="ot-step-content">
-                        <h4>Ready to Dispatch</h4>
-                        <p>{order.dispatch_status !== "pending_payment" ? "Prepared & Packed" : "Pending payment verification"}</p>
+                        <h4>Packed</h4>
+                        <p>{getStepStatus("packed") === "completed" ? "Ready for Dispatch" : "Preparing items"}</p>
                       </div>
                     </div>
 
-                    <div className={`ot-connector ot-connector--${getStepStatus("dispatched") === "completed" ? "completed" : "pending"}`} />
+                    <div className={`ot-connector ot-connector--${getStepStatus("shipped") === "completed" ? "completed" : "pending"}`} />
 
-                    {/* Step 4: Dispatched */}
-                    <div className={`ot-step ot-step--${getStepStatus("dispatched")}`}>
+                    {/* Step 4: Shipped */}
+                    <div className={`ot-step ot-step--${getStepStatus("shipped")}`}>
                       <div className="ot-step-icon">
                         <span className="material-symbols-outlined">local_shipping</span>
                       </div>
                       <div className="ot-step-content">
-                        <h4>Dispatched</h4>
-                        <p>{order.dispatch_status === "dispatched" ? "In Transit" : "Expected in 1–2 days"}</p>
+                        <h4>Shipped</h4>
+                        <p>{getStepStatus("shipped") === "completed" ? "In Transit" : "Awaiting pickup"}</p>
+                      </div>
+                    </div>
+
+                    <div className={`ot-connector ot-connector--${getStepStatus("out_for_delivery") === "completed" ? "completed" : "pending"}`} />
+
+                    {/* Step 5: Out for Delivery */}
+                    <div className={`ot-step ot-step--${getStepStatus("out_for_delivery")}`}>
+                      <div className="ot-step-icon">
+                        <span className="material-symbols-outlined">near_me</span>
+                      </div>
+                      <div className="ot-step-content">
+                        <h4>Out for Delivery</h4>
+                        <p>{getStepStatus("out_for_delivery") === "completed" ? "Local dispatch center" : "Nearby station"}</p>
+                      </div>
+                    </div>
+
+                    <div className={`ot-connector ot-connector--${getStepStatus("delivered") === "completed" ? "completed" : "pending"}`} />
+
+                    {/* Step 6: Delivered */}
+                    <div className={`ot-step ot-step--${getStepStatus("delivered")}`}>
+                      <div className="ot-step-icon">
+                        <span className="material-symbols-outlined">done_all</span>
+                      </div>
+                      <div className="ot-step-content">
+                        <h4>Delivered</h4>
+                        <p>{getStepStatus("delivered") === "completed" ? "Delivered successfully" : "Awaiting delivery"}</p>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
 
+              {/* Payment Status Box */}
+              {order.dispatch_status !== "cancelled" && (
+                <div className="ot-meta-box">
+                  <div className="ot-meta-row">
+                    <div className="ot-meta-item">
+                      <span className="material-symbols-outlined ot-meta-icon">payments</span>
+                      <div>
+                        <h3>Payment Status</h3>
+                        <p className={`ot-payment-badge ot-payment-badge--${order.payment_status}`}>
+                          {order.payment_status ? order.payment_status.toUpperCase() : "PENDING"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Dispatch Notes (Tracking ID, carrier info, etc.) */}
-              {order.dispatch_status === "dispatched" && order.dispatch_notes && (
+              {order.dispatch_notes && (
                 <div className="ot-notes-box">
                   <span className="material-symbols-outlined ot-notes-icon">info</span>
                   <div>
@@ -309,10 +358,11 @@ const OrderTracking = () => {
               <div className="ot-info-grid">
                 {/* Shipping Details */}
                 <div className="ot-info-card">
-                  <h3>Delivery Address</h3>
+                  <h3>Delivery Details</h3>
                   <p className="ot-customer-name">{order.customer_name}</p>
                   <p className="ot-address-text">{order.shipping_address}</p>
-                  <p className="ot-customer-contact">Email: {order.customer_email}</p>
+                  {order.customer_phone && <p className="ot-customer-contact">Phone: {order.customer_phone}</p>}
+                  {order.customer_email && <p className="ot-customer-contact">Email: {order.customer_email}</p>}
                 </div>
 
                 {/* Items Summary */}
@@ -340,6 +390,48 @@ const OrderTracking = () => {
                   </div>
                 </div>
               </div>
+
+              {/* Customer Support Contact */}
+              {order.support_contact && (
+                <div className="ot-support-box">
+                  <span className="material-symbols-outlined ot-support-icon">support_agent</span>
+                  <div>
+                    <h3>Need Help with Your Shipment?</h3>
+                    <p>
+                      For any questions or changes, reach out to Jeeva Gold support:
+                      <br />
+                      Email: <a href={`mailto:${order.support_contact.email}`}>{order.support_contact.email}</a> | Phone: {order.support_contact.phone}
+                    </p>
+                    <div className="ot-support-actions" style={{ marginTop: "1rem" }}>
+                      <a
+                        className="ot-whatsapp-query-btn"
+                        href={`https://wa.me/${order.support_contact.phone.replace(/\D/g, "")}?text=${encodeURIComponent(
+                          `Hi Jeeva Gold, I have a query about my order #${order.order_number || order.id}. Tracking Link: ${window.location.href}`
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "0.5rem",
+                          background: "#25d366",
+                          color: "white",
+                          padding: "0.6rem 1.2rem",
+                          borderRadius: "0.5rem",
+                          fontWeight: "600",
+                          fontSize: "0.85rem",
+                          textDecoration: "none",
+                          boxShadow: "0 4px 12px rgba(37, 211, 102, 0.2)",
+                          transition: "all 0.2s"
+                        }}
+                      >
+                        <span className="material-symbols-outlined" style={{ fontSize: "1.2rem" }}>chat</span>
+                        Query delivery on WhatsApp
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

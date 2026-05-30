@@ -26,8 +26,8 @@ export default function OriginStory() {
             </div>
           </div>
           <div className="origin__stat-bubble glass">
-            <p className="origin__stat-num">150+</p>
-            <p className="origin__stat-label">Years of Heritage</p>
+            <p className="origin__stat-num">25+</p>
+            <p className="origin__stat-label">Years of Experience</p>
           </div>
         </div>
 
@@ -37,22 +37,19 @@ export default function OriginStory() {
             The Heritage of <span className="origin__title-accent">Assam</span>
           </h2>
           <p className="origin__text origin__text--lg">
-            Nestled in the foothills of the Himalayas, our tea estates breathe in the moisture of
-            the Brahmaputra river. This unique climate creates the world-renowned 'Assam Character'
-            – a strength and richness that cannot be replicated anywhere else.
+            Nestled in the foothills of the Himalayas, Assam’s tea gardens breathe in the moisture of the mighty Brahmaputra river. This unique land gives birth to the world-renowned “Assam Character” — a bold strength and rich taste that cannot be replicated anywhere else.
           </p>
           <p className="origin__text">
-            For three generations, we have worked with local artisans to perfect the art of tea
-            oxidation, ensuring every tin of Jeva Gold carries the soul of our land.
+            The story of Assam Tea began in the lush tea belt of Upper Assam, where fertile soil, abundant rainfall, and humid river valley air create teas known for their deep color, rich body, and unmistakable aroma.
           </p>
 
           {expanded && (
             <div className="origin__text-expanded">
               <p className="origin__text">
-                Our legacy began in the late 19th century, in the heart of Upper Assam's tea belt. We believe in single-origin purity, where every leaf is hand-plucked during the peak second flush season when the tea leaves hold their most concentrated flavors.
+                For over 25 years, tea has been more than a business for us — it has been a way of life. From carefully selecting teas at the gardens to crafting balanced blends using years of experience and a deep understanding of Assam Teas, every step is guided by experience, patience, and pride in Assam’s heritage.
               </p>
               <p className="origin__text">
-                By maintaining long-term partnerships with local farming communities, we practice biodynamic agriculture that rejuvenates the soil. This dedicated care produces a rich, copper-colored cup with sweet malty undertones that has defined our family's tea for over a century.
+                At Jeeva Gold, we continue to work closely with local growers and tea communities who have cared for these gardens for generations. Their dedication, along with our commitment to quality, helps us bring you a rich coppery cup with smooth malty notes — a tea made to refresh conversations, families, and everyday moments.
               </p>
             </div>
           )}

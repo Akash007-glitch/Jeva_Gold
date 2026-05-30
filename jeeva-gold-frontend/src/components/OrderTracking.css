@@ -537,3 +537,122 @@
     padding: 1.5rem;
   }
 }
+
+/* Meta box (Estimated Delivery / Payment Status) */
+.ot-meta-box {
+  background: var(--surface);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.ot-meta-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.ot-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.ot-meta-icon {
+  color: var(--primary);
+  font-size: 1.75rem;
+}
+
+.ot-meta-item h3 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--on-surface-variant);
+  margin: 0 0 0.25rem 0;
+}
+
+.ot-meta-item p {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--on-surface);
+  margin: 0;
+}
+
+/* Payment Status Badge */
+.ot-payment-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: inline-block;
+}
+
+.ot-payment-badge--paid {
+  background: rgba(21, 128, 61, 0.1);
+  color: var(--green-success);
+}
+
+.ot-payment-badge--pending {
+  background: rgba(197, 160, 89, 0.1);
+  color: var(--gold);
+}
+
+.ot-payment-badge--failed {
+  background: rgba(185, 28, 28, 0.1);
+  color: var(--red-error);
+}
+
+/* Support Box */
+.ot-support-box {
+  display: flex;
+  gap: 1rem;
+  background: var(--surface);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+}
+
+.ot-support-icon {
+  color: var(--primary);
+  font-size: 2rem;
+}
+
+.ot-support-box h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 0.35rem 0;
+}
+
+.ot-support-box p {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--on-surface-variant);
+  margin: 0;
+}
+
+.ot-support-box a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.ot-support-box a:hover {
+  text-decoration: underline;
+}
+
+.ot-whatsapp-query-btn:hover {
+  background: #20ba5a !important;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+

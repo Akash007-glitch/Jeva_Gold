@@ -16,7 +16,7 @@ export type NormalizedOrderItem = {
 
 export type NormalizedCreateOrder = {
   customer_name: string;
-  customer_email: string;
+  customer_email?: string;
   customer_phone: string;
   shipping_address: string;
   items: NormalizedOrderItem[];
@@ -61,7 +61,7 @@ const orderItemSchema = z
 
 const createOrderSchema = z.object({
   customer_name: z.string().trim().min(2).max(120),
-  customer_email: z.string().trim().email().max(160),
+  customer_email: z.string().trim().email().max(160).optional().or(z.literal('')),
   customer_phone: z
     .string()
     .trim()
@@ -228,7 +228,7 @@ export const normalizeCreateOrderPayloadWithCatalog = (
 
   return {
     customer_name: result.data.customer_name,
-    customer_email: result.data.customer_email,
+    customer_email: result.data.customer_email || '',
     customer_phone: result.data.customer_phone,
     shipping_address: result.data.shipping_address,
     items,

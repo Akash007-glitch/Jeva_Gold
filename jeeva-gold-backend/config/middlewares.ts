@@ -1,5 +1,22 @@
 import type { Core } from '@strapi/strapi';
 
+const configuredOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.CORS_ORIGINS,
+]
+  .filter(Boolean)
+  .flatMap((value) => String(value).split(','))
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const allowedOrigins = [
+  'https://jeva-gold-u63j.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:3000',
+  ...configuredOrigins,
+];
+
 const config: Core.Config.Middlewares = [
   'strapi::logger',
   'strapi::errors',
@@ -7,13 +24,7 @@ const config: Core.Config.Middlewares = [
   {
     name: 'strapi::cors',
     config: {
-      // Add your production frontend URL here when deploying
-      origin: [
-        'https://jeva-gold-u63j.vercel.app',
-        'http://localhost:5173',  // Vite dev server
-        'http://localhost:3000',  // alternate dev port
-        process.env.FRONTEND_URL || '',
-      ].filter(Boolean),
+      origin: allowedOrigins,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
       headers: [
         'Content-Type',

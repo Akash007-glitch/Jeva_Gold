@@ -50,7 +50,11 @@ const CheckoutPage = () => {
   const formatINR = (amount) => `₹${amount.toLocaleString("en-IN")}`;
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setForm({
+      ...form,
+      [name]: type === "checkbox" ? checked : value
+    });
   };
 
   const shippingOptions = [
@@ -60,9 +64,14 @@ const CheckoutPage = () => {
 
   // ── This is what the "Proceed to Payment" button calls ──
   const handleProceed = async () => {
-    // Basic validation
-    if (!form.firstName || !form.email || !form.phone || !form.street || !form.city || !form.zip) {
+    // Basic validation (email is optional)
+    if (!form.firstName || !form.phone || !form.street || !form.city || !form.zip) {
       setError("Please fill in all required address fields.");
+      return;
+    }
+
+    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      setError("Please enter a valid email address or leave it blank.");
       return;
     }
 
@@ -77,10 +86,10 @@ const CheckoutPage = () => {
       shippingMethod,            // "standard" or "express"
       totalAmount: getTotal(),
 
-      onSuccess: (paymentId, orderId) => {
+      onSuccess: (paymentId, orderId, orderNumber, trackingToken) => {
         clearCart();   // wipe Zustand store
-        // Navigate to success page, pass paymentId and orderId/email so user can see confirmation and track order
-        navigate(`/order-success?payment_id=${paymentId}&order_id=${orderId}&email=${encodeURIComponent(form.email)}`);
+        // Navigate to success page, pass paymentId, orderId, order_number, token and email
+        navigate(`/order-success?payment_id=${paymentId}&order_id=${orderId}&order_number=${orderNumber || ""}&token=${trackingToken || ""}&email=${encodeURIComponent(form.email)}`);
       },
 
       onFailure: (message) => {
@@ -120,7 +129,7 @@ const CheckoutPage = () => {
                   <input name="lastName" type="text" placeholder="Last name" value={form.lastName} onChange={handleChange} />
                 </div>
                 <div className="co-field">
-                  <label>Email *</label>
+                  <label>Email (Optional)</label>
                   <input name="email" type="email" placeholder="" value={form.email} onChange={handleChange} />
                 </div>
                 <div className="co-field">

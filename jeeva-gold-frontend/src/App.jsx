@@ -201,6 +201,7 @@ export default function App() {
         <Route path="/checkout" element={<CheckoutPage />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/track-order" element={<OrderTracking />} />
+        <Route path="/track/:orderNumber" element={<OrderTracking />} />
       </Routes>
 
       {/* Put common global components like Footer outside <Routes> */}

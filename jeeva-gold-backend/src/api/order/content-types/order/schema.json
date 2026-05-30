@@ -17,11 +17,18 @@
         },
         "customer_email": {
             "type": "email",
-            "required": true
+            "required": false
         },
         "customer_phone": {
             "type": "string",
             "required": true
+        },
+        "order_number": {
+            "type": "string",
+            "unique": true
+        },
+        "tracking_token": {
+            "type": "string"
         },
         "shipping_address": {
             "type": "text",
@@ -67,8 +74,11 @@
             "type": "enumeration",
             "enum": [
                 "pending_payment",
-                "ready_to_dispatch",
-                "dispatched",
+                "confirmed",
+                "packed",
+                "shipped",
+                "out_for_delivery",
+                "delivered",
                 "cancelled"
             ],
             "default": "pending_payment",

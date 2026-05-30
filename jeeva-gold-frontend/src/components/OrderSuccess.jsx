@@ -29,15 +29,13 @@ const OrderSuccess = () => {
 
     const paymentId = searchParams.get("payment_id");
     const orderId = searchParams.get("order_id");
+    const orderNumber = searchParams.get("order_number");
+    const token = searchParams.get("token");
     const email = searchParams.get("email") || "";
 
     return (
         <div className="os-root">
-            <nav className="os-nav">
-                <div className="os-nav-inner">
-                    <div className="os-brand">Jeeva Gold</div>
-                </div>
-            </nav>
+
 
             <main className="os-main">
                 <div className="os-card">
@@ -46,17 +44,17 @@ const OrderSuccess = () => {
                         <span className="material-symbols-outlined os-check-icon">check_circle</span>
                     </div>
 
-                    <h1>Order Confirmed</h1>
+                    <h1>Your order has been successfully placed.</h1>
                     <p className="os-subtitle">
                         Your premium Assam tea is on its way. Thank you for choosing Jeeva Gold.
                     </p>
 
                     {/* Show Order reference ID & payment ID */}
                     <div className="os-refs">
-                        {orderId && (
+                        {(orderNumber || orderId) && (
                             <div className="os-ref">
-                                <span className="os-ref-label">Order ID</span>
-                                <span className="os-ref-value">#{orderId}</span>
+                                <span className="os-ref-label">Order Number</span>
+                                <span className="os-ref-value">#{orderNumber || orderId}</span>
                             </div>
                         )}
                         {paymentId && (
@@ -97,16 +95,16 @@ const OrderSuccess = () => {
                         <button className="os-primary-btn" onClick={() => navigate("/")}>
                             Continue Shopping
                         </button>
-                        <button 
-                            className="os-secondary-btn" 
+                        <button
+                            className="os-secondary-btn"
                             onClick={() => {
-                                const url = orderId 
-                                    ? `/track-order?id=${orderId}&email=${encodeURIComponent(email)}` 
-                                    : '/track-order';
+                                const url = orderNumber && token
+                                    ? `/track/${orderNumber}?token=${token}`
+                                    : `/track-order?id=${orderId}&email=${encodeURIComponent(email)}`;
                                 navigate(url);
                             }}
                         >
-                            Track My Order
+                            Track Order
                         </button>
                     </div>
                 </div>

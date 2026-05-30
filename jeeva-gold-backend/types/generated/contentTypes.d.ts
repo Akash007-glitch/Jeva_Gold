@@ -482,12 +482,20 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    customer_email: Schema.Attribute.Email & Schema.Attribute.Required;
+    customer_email: Schema.Attribute.Email;
     customer_name: Schema.Attribute.String & Schema.Attribute.Required;
     customer_phone: Schema.Attribute.String & Schema.Attribute.Required;
     dispatch_notes: Schema.Attribute.Text;
     dispatch_status: Schema.Attribute.Enumeration<
-      ['pending_payment', 'ready_to_dispatch', 'dispatched', 'cancelled']
+      [
+        'pending_payment',
+        'confirmed',
+        'packed',
+        'shipped',
+        'out_for_delivery',
+        'delivered',
+        'cancelled',
+      ]
     > &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'pending_payment'>;
@@ -495,6 +503,7 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::order.order'> &
       Schema.Attribute.Private;
+    order_number: Schema.Attribute.String & Schema.Attribute.Unique;
     owner_notification_error: Schema.Attribute.Text;
     owner_notification_sent_at: Schema.Attribute.DateTime;
     owner_order_summary: Schema.Attribute.Text;
@@ -512,6 +521,7 @@ export interface ApiOrderOrder extends Struct.CollectionTypeSchema {
     subtotal_amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
     tax_amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
     total_amount: Schema.Attribute.Decimal & Schema.Attribute.Required;
+    tracking_token: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

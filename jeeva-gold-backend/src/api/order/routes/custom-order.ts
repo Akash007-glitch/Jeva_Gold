@@ -21,6 +21,16 @@ export default {
     },
     {
       method: 'POST',
+      path: '/orders/:id/regenerate-token',
+      handler: 'api::order.order.regenerateToken',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      },
+    },
+    {
+      method: 'POST',
       path: '/orders/create-razorpay-order',
       handler: 'api::order.order.createRazorpayOrder',
       config: {

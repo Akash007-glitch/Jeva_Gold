@@ -1,5 +1,6 @@
 import { factories } from '@strapi/strapi';
 import Razorpay from 'razorpay';
+import crypto from 'crypto';
 import {
   PaymentValidationError,
   getWebhookOrderUpdate,
@@ -12,7 +13,7 @@ import {
   buildOwnerOrderSummary,
   notifyOwnerForPaidOrder,
 } from '../services/owner-notification';
-import { sendOrderConfirmation } from '../../../services/whatsapp';
+import { sendCustomerNotification } from '../../../services/notifications';
 
 const getRazorpay = () => {
   const key_id = process.env.RAZORPAY_KEY_ID;
@@ -34,6 +35,37 @@ const handleControllerError = (ctx: any, error: any, fallbackMessage: string) =>
   return ctx.internalServerError(error?.message || fallbackMessage);
 };
 
+const maskPhone = (phone?: string) => {
+  if (!phone) return '';
+  const cleaned = phone.replace(/\D/g, '');
+  if (cleaned.length <= 4) return '****';
+  return `******${cleaned.slice(-4)}`;
+};
+
+const maskEmail = (email?: string) => {
+  if (!email) return '';
+  const parts = email.split('@');
+  if (parts.length < 2) return '***';
+  const [local, domain] = parts;
+  if (local.length <= 2) return `${local[0]}***@${domain}`;
+  return `${local[0]}***${local[local.length - 1]}@${domain}`;
+};
+
+const maskAddress = (address?: string) => {
+  if (!address) return '';
+  const parts = address.split(',').map((p) => p.trim());
+  if (parts.length <= 2) {
+    return '******';
+  }
+  const maskedParts = parts.map((part, index) => {
+    if (index < parts.length - 3) {
+      return '******';
+    }
+    return part;
+  });
+  return maskedParts.join(', ');
+};
+
 const markOrderPaidAndNotifyOwner = async (strapi: any, order: any, razorpay_payment_id?: string) => {
   if (order.payment_status === 'paid' && order.owner_order_summary) {
     return order;
@@ -41,7 +73,7 @@ const markOrderPaidAndNotifyOwner = async (strapi: any, order: any, razorpay_pay
 
   const paidOrderData: Record<string, any> = {
     payment_status: 'paid',
-    dispatch_status: 'ready_to_dispatch',
+    dispatch_status: 'confirmed',
     paid_at: new Date(),
   };
 
@@ -54,12 +86,8 @@ const markOrderPaidAndNotifyOwner = async (strapi: any, order: any, razorpay_pay
     data: paidOrderData,
   });
 
-  await sendOrderConfirmation({ // WhatsApp order confirmation call
-    customerName: paidOrder.customer_name,
-    customerPhone: paidOrder.customer_phone,
-    orderId: paidOrder.id,
-    amount: paidOrder.total_amount,
-  });
+  // Call customer notification service with order details
+  await sendCustomerNotification(paidOrder, 'placed');
 
   const summary = buildOwnerOrderSummary(paidOrder);
   const notification = await notifyOwnerForPaidOrder(strapi, {
@@ -92,10 +120,12 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         receipt: `receipt_${Date.now()}`,
       });
 
-      const order = await strapi.db.query('api::order.order').create({
+      const tracking_token = crypto.randomBytes(24).toString('hex');
+
+      let order = await strapi.db.query('api::order.order').create({
         data: {
           customer_name: orderInput.customer_name,
-          customer_email: orderInput.customer_email,
+          customer_email: orderInput.customer_email || '',
           customer_phone: orderInput.customer_phone,
           shipping_address: orderInput.shipping_address,
           items: orderInput.items,
@@ -106,7 +136,14 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
           razorpay_order_id: razorpayOrder.id,
           payment_status: 'pending',
           dispatch_status: 'pending_payment',
+          tracking_token,
         },
+      });
+
+      const order_number = `ORD${10000 + order.id}`;
+      order = await strapi.db.query('api::order.order').update({
+        where: { id: order.id },
+        data: { order_number },
       });
 
       const owner_order_summary = buildOwnerOrderSummary(order);
@@ -124,6 +161,8 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         currency: razorpayOrder.currency,
         key_id: process.env.RAZORPAY_KEY_ID,
         order_id: order.id,
+        order_number: order.order_number,
+        tracking_token: order.tracking_token,
         totals: {
           subtotal_amount: orderInput.subtotal_amount,
           tax_amount: orderInput.tax_amount,
@@ -179,6 +218,8 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
         success: true,
         message: 'Payment verified successfully',
         order_id: updatedOrder.id,
+        order_number: updatedOrder.order_number,
+        tracking_token: updatedOrder.tracking_token,
         payment_status: 'paid',
       });
     } catch (error: any) {
@@ -251,28 +292,37 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
 
   async trackOrder(ctx: any) {
     try {
-      const { id, email } = ctx.query;
-      if (!id || !email) {
-        return ctx.badRequest('Missing order ID or email address');
+      const { number, order_number, id, token } = ctx.query;
+      const lookupNumber = order_number || number || id;
+
+      if (!lookupNumber || !token) {
+        return ctx.badRequest('Missing order number or tracking token');
       }
 
       const order = await strapi.db.query('api::order.order').findOne({
         where: {
-          id: Number(id),
-          customer_email: email.trim().toLowerCase(),
+          order_number: String(lookupNumber).trim(),
+          tracking_token: String(token).trim(),
         },
       });
 
       if (!order) {
-        return ctx.notFound('Order not found or email address does not match');
+        // Return 404 with exact custom message
+        ctx.status = 404;
+        return ctx.send({
+          success: false,
+          message: 'Invalid or expired tracking link',
+        });
       }
 
       return ctx.send({
         success: true,
         order: {
           id: order.id,
+          order_number: order.order_number,
           customer_name: order.customer_name,
-          customer_email: order.customer_email,
+          customer_email: maskEmail(order.customer_email),
+          customer_phone: maskPhone(order.customer_phone),
           total_amount: order.total_amount,
           payment_status: order.payment_status,
           dispatch_status: order.dispatch_status,
@@ -280,11 +330,47 @@ export default factories.createCoreController('api::order.order', ({ strapi }) =
           createdAt: order.createdAt,
           paid_at: order.paid_at,
           items: order.items,
-          shipping_address: order.shipping_address,
+          shipping_address: maskAddress(order.shipping_address),
+          support_contact: {
+            email: 'vinayakteamarketing@gmail.com',
+            phone: '+91 84720 81093',
+          },
         },
       });
     } catch (error: any) {
       return handleControllerError(ctx, error, 'Failed to track order');
+    }
+  },
+
+  async regenerateToken(ctx: any) {
+    try {
+      const { id } = ctx.params;
+      const { expire } = ctx.request.body || {};
+
+      const order = await strapi.db.query('api::order.order').findOne({
+        where: { id: Number(id) },
+      });
+
+      if (!order) {
+        return ctx.notFound('Order not found');
+      }
+
+      const newToken = expire ? '' : crypto.randomBytes(24).toString('hex');
+
+      const updated = await strapi.db.query('api::order.order').update({
+        where: { id: order.id },
+        data: {
+          tracking_token: newToken,
+        },
+      });
+
+      return ctx.send({
+        success: true,
+        message: expire ? 'Tracking token expired' : 'Tracking token regenerated',
+        tracking_token: updated.tracking_token,
+      });
+    } catch (error: any) {
+      return handleControllerError(ctx, error, 'Failed to regenerate token');
     }
   },
 }));
