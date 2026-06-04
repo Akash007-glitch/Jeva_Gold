@@ -86,7 +86,7 @@ export default function WhatsAppOrderInfo() {
         <span className="whatsapp-order-info__icon" aria-hidden="true">
           <WhatsAppLogo />
         </span>
-        <span className="whatsapp-order-info__text">Click here for order info</span>
+        <span className="whatsapp-order-info__text">Click here for any query </span>
       </button>
     </div>
   );

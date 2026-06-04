@@ -3,7 +3,7 @@ import './Footer.css';
 
 const instagramUrl =
   "https://www.instagram.com/jeeva_gold_tea?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==";
-const facebookUrl = "https://www.facebook.com/jeevagoldtea";
+const facebookUrl = "https://www.facebook.com/profile.php?id=61578475258104";
 
 export default function Footer() {
   return (
