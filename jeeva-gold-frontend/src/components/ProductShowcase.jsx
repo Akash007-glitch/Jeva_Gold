@@ -6,7 +6,7 @@ import Product3Img from '../../../image/Elaichi.webp';
 import Product4Img from '../../../image/GreenTea.webp';
 import Product5Img from '../../../image/MasalaChai.webp';
 import RoyalTeaImg from '../../../image/product6.webp';
-import premiumTeaImg from '../../../image/pre.webp';
+import premiumTeaImg from '../../../image/p1.webp';
 
 const products = [
   {
@@ -54,6 +54,7 @@ const products = [
     featured: false,
   },
   {
+
     id: 'starter-5',
     productId: 'starter-5',
     name: 'Jeeva Gold Premium Tea',
