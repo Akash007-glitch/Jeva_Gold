@@ -26,7 +26,8 @@ export default function Hero() {
           </div>
 
           <h1 className="hero__title">
-            Experience the <span className="hero__title-accent">Authentic</span> Taste of Assam
+            Experience the <span className="hero__title-accent">Authentic</span>{" "}
+            <span className="hero__title-nowrap">Taste of Assam Tea</span>
           </h1>
 
           <p className="hero__subtitle">

@@ -36,6 +36,9 @@ export default function OriginStory() {
           <h2 className="origin__title">
             The Heritage of <span className="origin__title-accent">Assam</span>
           </h2>
+          <h3 className="origin__subtitle">
+            Rooted in Tradition. Crafted by JEEVA GOLD.
+          </h3>
           <p className="origin__text origin__text--lg">
             Nestled in the foothills of the Himalayas, Assam’s tea gardens breathe in the moisture of the mighty Brahmaputra river. This unique land gives birth to the world-renowned “Assam Character” — a bold strength and rich taste that cannot be replicated anywhere else.
           </p>

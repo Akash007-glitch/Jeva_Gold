@@ -17,6 +17,7 @@ import ShoppingCart from './components/ShoppingCart'
 import CheckoutPage from './components/CheckoutPage'
 import OrderSuccess from "./components/OrderSuccess";
 import OrderTracking from "./components/OrderTracking";
+import WhatsAppOrderInfo from "./components/WhatsAppOrderInfo";
 import loadingLogo from '../../image/loading_logo.webp';
 
 
@@ -208,6 +209,7 @@ export default function App() {
       {/* <Testimonials /> */}
       
       <Footer />
+      <WhatsAppOrderInfo />
       <ScrollToTopButton />
     </BrowserRouter>
   );

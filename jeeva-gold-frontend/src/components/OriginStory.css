@@ -1,4 +1,6 @@
-.origin { overflow: hidden; }
+.origin {
+  overflow: hidden;
+}
 
 .origin__grid {
   display: grid;
@@ -6,7 +8,9 @@
   align-items: center;
 }
 
-.origin__images { position: relative; }
+.origin__images {
+  position: relative;
+}
 
 .origin__image-grid {
   display: grid;
@@ -14,7 +18,9 @@
   gap: 1rem;
 }
 
-.origin__image-col-offset { padding-top: 3rem; }
+.origin__image-col-offset {
+  padding-top: 3rem;
+}
 
 .origin__photo {
   border-radius: var(--radius-2xl);
@@ -59,12 +65,32 @@
   line-height: 1.2;
 }
 
-.origin__title-accent { color: var(--color-primary); font-style: italic; }
+.origin__title-accent {
+  color: var(--color-primary);
+  font-style: italic;
+}
 
-.origin__text { color: var(--color-slate-600); line-height: 1.75; }
-.origin__text--lg { font-size: 1.125rem; }
+.origin__subtitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.00em;
+  margin-top: -0.15rem;
+}
 
-.origin__cta-wrap { padding-top: 1rem; }
+.origin__text {
+  color: #000000;
+  font-weight: 500;
+  line-height: 1.75;
+}
+
+.origin__text--lg {
+  font-size: 1.125rem;
+}
+
+.origin__cta-wrap {
+  padding-top: 1rem;
+}
 
 .origin__cta-btn {
   display: inline-flex;
@@ -75,15 +101,29 @@
   background: transparent;
   transition: var(--transition-all);
 }
-.origin__cta-btn:hover { gap: 1.25rem; }
-.origin__cta-btn .material-symbols-outlined { transition: transform 200ms ease; }
-.origin__cta-btn:hover .material-symbols-outlined { transform: translateX(0.5rem); }
+
+.origin__cta-btn:hover {
+  gap: 1.25rem;
+}
+
+.origin__cta-btn .material-symbols-outlined {
+  transition: transform 200ms ease;
+}
+
+.origin__cta-btn:hover .material-symbols-outlined {
+  transform: translateX(0.5rem);
+}
 
 @media (min-width: 768px) {
-  .origin__stat-bubble { display: block; }
+  .origin__stat-bubble {
+    display: block;
+  }
 }
+
 @media (min-width: 1024px) {
-  .origin__grid { grid-template-columns: 1fr 1fr; }
+  .origin__grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .origin__text-expanded {
@@ -98,9 +138,9 @@
     opacity: 0;
     transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-

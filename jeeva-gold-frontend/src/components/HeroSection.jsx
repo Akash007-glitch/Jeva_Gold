@@ -14,7 +14,7 @@ export default function HeroSection() {
               The Gold Standard
             </span>
             <h1 className="text-white font-headline text-5xl font-extrabold tracking-tight mb-6">
-              Experience the Strength of Authentic Assam.
+              Experience the Strength of Authentic Assam Tea.
             </h1>
             <p className="text-primary-fixed text-lg leading-relaxed">
               Jeeva Gold brings the bold spirit of Assam's finest gardens directly to your morning
