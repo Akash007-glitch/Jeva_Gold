@@ -7,6 +7,8 @@ import Product4Img from '../../../image/GreenTea.webp';
 import Product5Img from '../../../image/MasalaChai.webp';
 import RoyalTeaImg from '../../../image/product6.webp';
 import premiumTeaImg from '../../../image/p1.webp';
+import premium5kgImg from '../../../image/premium5kg.webp';
+import royal5kgImg from '../../../image/royal5kg.webp';
 
 const products = [
   {
@@ -74,6 +76,28 @@ const products = [
     description: 'Jeeva Gold Royal Tea brings a sophisticated and elegant tea experience with its premium blend and rich aroma.',
     image: RoyalTeaImg,
     tags: ['1KG', 'Premium Assam'],
+    featured: false,
+  },
+  {
+    id: 'starter-7',
+    productId: 'starter-7',
+    name: 'Jeeva Gold Premium Tea',
+    price: 1600,
+    quantity: '5 kg x 2 Pack',
+    description: 'Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.',
+    image: premium5kgImg,
+    tags: ['5kg', 'Premium Assam'],
+    featured: false,
+  },
+  {
+    id: 'starter-8',
+    productId: 'starter-8',
+    name: 'Jeeva Gold Royal Tea',
+    price: 2100,
+    quantity: '5 kg x 2 Pack',
+    description: 'Jeeva Gold Royal Tea brings a sophisticated and elegant tea experience with its premium blend and rich aroma.',
+    image: royal5kgImg,
+    tags: ['5kg', 'Premium Assam'],
     featured: false,
   },
 ];

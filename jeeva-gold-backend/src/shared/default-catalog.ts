@@ -77,6 +77,28 @@ export const defaultCatalog: DefaultCatalogItem[] = [
     featured: false,
     stock: 99,
   },
+  {
+    product_id: 'starter-7',
+    name: 'Jeeva Gold Premium Tea',
+    size: '5 kg x 2 Pack',
+    price: 1600,
+    description: 'Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.',
+    origin: 'Premium Assam',
+    tags: ['5kg', 'Premium Assam'],
+    featured: false,
+    stock: 99,
+  },
+  {
+    product_id: 'starter-8',
+    name: 'Jeeva Gold Royal Tea',
+    size: '5 kg x 2 Pack',
+    price: 2100,
+    description: 'Jeeva Gold Royal Tea brings a sophisticated and elegant tea experience with its premium blend and rich aroma.',
+    origin: 'Premium Assam',
+    tags: ['5kg', 'Premium Assam'],
+    featured: false,
+    stock: 99,
+  },
 ];
 
 export const getDefaultCatalogKey = (item: Pick<DefaultCatalogItem, 'name' | 'size'>) =>
