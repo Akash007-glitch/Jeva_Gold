@@ -168,6 +168,11 @@
   transition: transform 500ms ease;
 }
 
+.product-card__img.img-contain {
+  object-fit: contain;
+  padding: 0.5rem;
+}
+
 .product-card__img--missing {
   background: linear-gradient(135deg, #dfeee4, #f7faf7);
 }

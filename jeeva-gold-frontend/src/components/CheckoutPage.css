@@ -374,6 +374,11 @@
   object-fit: cover;
 }
 
+.co-item-img img.img-contain {
+  object-fit: contain;
+  padding: 0.25rem;
+}
+
 .co-item-info {
   flex: 1;
   display: flex;

@@ -231,7 +231,7 @@ const CheckoutPage = () => {
                 {items.map((item) => (
                   <div className="co-item" key={item.id}>
                     <div className="co-item-img">
-                      <img src={item.img} alt={item.alt || item.name} />
+                      <img src={item.img} alt={item.alt || item.name} className={item.tags && item.tags.includes('5kg') ? 'img-contain' : ''} />
                     </div>
                     <div className="co-item-info">
                       <h4>{item.name}</h4>

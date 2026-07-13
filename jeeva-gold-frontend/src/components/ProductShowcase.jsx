@@ -60,7 +60,7 @@ const products = [
     id: 'starter-5',
     productId: 'starter-5',
     name: 'Jeeva Gold Premium Tea',
-    price: 360,
+    price: 400,
     quantity: '1 KG Pack',
     description: 'Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.',
     image: premiumTeaImg,
@@ -72,7 +72,7 @@ const products = [
     productId: 'starter-6',
     name: 'Jeeva Gold Royal Tea',
     price: 400,
-    quantity: '1 KG Pack',
+    quantity: '1 KG  Pack',
     description: 'Jeeva Gold Royal Tea brings a sophisticated and elegant tea experience with its premium blend and rich aroma.',
     image: RoyalTeaImg,
     tags: ['1KG', 'Premium Assam'],
@@ -83,7 +83,7 @@ const products = [
     productId: 'starter-7',
     name: 'Jeeva Gold Premium Tea',
     price: 1600,
-    quantity: '5 kg x 1 Pack',
+    quantity: '5 kg  Pack',
     description: 'Jeeva Gold brings the richness of Strong Assam Tea into every sip - bold in taste, rich in colour, and full of life.',
     image: premium5kgImg,
     tags: ['5kg', 'Premium Assam'],
@@ -94,7 +94,7 @@ const products = [
     productId: 'starter-8',
     name: 'Jeeva Gold Royal Tea',
     price: 2100,
-    quantity: '5 kg x 1 Pack',
+    quantity: '5 kg  Pack',
     description: 'Jeeva Gold Royal Tea brings a sophisticated and elegant tea experience with its premium blend and rich aroma.',
     image: royal5kgImg,
     tags: ['5kg', 'Premium Assam'],
@@ -129,7 +129,7 @@ function ProductCard({ product, delay }) {
         {product.featured && (
           <span className="product-card__badge">Best Seller</span>
         )}
-        <img src={product.image} alt={product.name} className="product-card__img" />
+        <img src={product.image} alt={product.name} className={`product-card__img ${product.tags && product.tags.includes('5kg') ? 'img-contain' : ''}`} />
       </div>
       <div className="product-card__meta">
         <h3 className="product-card__name">{product.name}</h3>

@@ -59,7 +59,7 @@ const ShoppingCart = () => {
             {items.map((item) => (
               <div className="sc-item" key={item.id}>
                 <div className="sc-item-img">
-                  <img src={item.img} alt={item.alt || item.name} />
+                  <img src={item.img} alt={item.alt || item.name} className={item.tags && item.tags.includes('5kg') ? 'img-contain' : ''} />
                 </div>
                 <div className="sc-item-body">
                   <div className="sc-item-top">
